@@ -1,0 +1,173 @@
+/*
+
+  Based on
+	terrafirma1.0 by nodethirtythree design
+	http://www.nodethirtythree.com
+
+*/
+
+body
+{
+background: #F9F9F7 url('/images/body_bg.gif') repeat-x;
+color: #8C8C73;
+font-size: 1em;
+}
+
+a
+{
+color: #FF7800;
+text-decoration: underline;
+}
+
+a:hover
+{
+text-decoration: none;
+}
+
+sup
+{
+font-size: 0.5em;
+}
+
+#upbg
+{
+position: absolute;
+top: 0px;
+left: 0px;
+background: #fff url('/images/upbg.gif') no-repeat;
+width: 747px;
+height: 264px;
+}
+
+#outer
+{
+position: relative;
+width: 747px;
+margin: 0 auto;
+background: #fff url('/images/abg.gif') repeat-y;
+}
+
+#inner
+{
+position: relative;
+padding: 13px 30px 13px 30px;
+}
+
+#header
+{
+position: absolute;
+width: 232px;
+height: 92px;
+color: #fff;
+padding-left: 20px;
+}
+
+#header a
+{
+  display: block;
+}
+
+#splash
+{
+position: absolute;
+right: 30px;
+background: #EAEAE2 url('/images/splash.jpg') no-repeat;
+width: 445px;
+height: 92px;
+}
+
+#nav
+{
+position: relative;
+background: #46461F url('/images/nav_bg.gif') repeat-x;
+height: 67px;
+padding: 0px 5px 0px 5px;
+margin: 98px 0px 10px 0px;
+}
+
+#nav ul li
+{
+display: inline;
+line-height: 50px;
+}
+
+#nav ul li a, #nav ul li.currently-selected
+{
+background-color: transparent;
+background-repeat: repeat-x;
+padding: 8px 10px 8px 10px;
+font-size: 12px;
+color: #fff;
+font-weight: bold;
+}
+
+#nav ul li a:hover, #nav ul li.currently-selected
+{
+background: #fff url('/images/nav_hover_bg.gif') repeat-x top;
+color: #4A4A24;
+text-decoration: none;
+}
+
+#content
+{
+position: relative;
+}
+
+#content p
+{
+text-align: justify;
+padding: 0px 15px 10px 15px;
+}
+
+#content ul, #content ol
+{
+padding: 0px 30px 10px 30px;
+list-style-position: inside;
+}
+
+#footer
+{
+position: relative;
+clear: both;
+text-align: center;
+background-image: url('/images/footer_bg.gif');
+color: #A8A88D;
+font-size: smaller;
+}
+
+#footer a
+{
+color: #8C8C73;
+}
+
+#content-header, #memberships ul.linearList {
+  text-align: center;
+}
+
+#header
+{
+  padding: 0px;
+}
+
+#header img
+{
+  margin: 0px;
+}
+
+#memberships
+{
+  margin-top: 2em;
+}
+
+#memberships hr
+{
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+img.pest-pic
+{
+  float: left;
+  margin-right: 5px;
+}
