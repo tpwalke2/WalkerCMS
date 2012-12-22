@@ -1,4 +1,6 @@
 <?php
+use Laravel\Config;
+
 class TemplateDataGenerator
 {
  public function generate_data($pages, $page)
@@ -6,13 +8,14 @@ class TemplateDataGenerator
   $page_id = $page->get_id();
   $page_title = $page->get_page_title();
   $organization_name = Config::get('walkercms.organization_name');
-  $organization_full_title = Config::get('walkercms.organization_full_title');
+  $organization_full_title = Config::get('walkercms.organization_full_title', $organization_name);
   return array(
     'site' => Config::get('walkercms.site'),
     'page_id' => $page_id,
     'page_title' => $organization_name . ($page_title == '' ? '' : ": $page_title"),
     'organization_full_title' => $organization_full_title,
     'organization_name' => $organization_name,
+    'organization_slogan' => Config::get('walkercms.organization_slogan', ''),
     'site_description' => Config::get('walkercms.description'),
     'site_keywords' => Config::get('walkercms.keywords'),
     'has_page_specific_html_header' => $page->has_custom_html_header(),

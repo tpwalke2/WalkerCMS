@@ -1,5 +1,5 @@
 <?php
-require_once(path('app') . 'entities/page_model.php');
+require_once(path('app') . 'models/page_model.php');
 
 class TestPageModel extends PHPUnit_Framework_TestCase
 {

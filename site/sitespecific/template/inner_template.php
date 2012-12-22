@@ -1,33 +1,51 @@
-<div id="container" class="<?= ($contains_secondary_content ? 'secondaryContent' : '') ?>">
+<a name="top"></a>
+<div id="wrap">
  <div id="header">
-  <a href="home" class="homeLink" title="<?= $organization_name ?> Home"><img src="/images/slogan_small.png" alt="<?= $organization_full_title ?> logo" /></a>
-  <?php if ($has_page_specific_header): ?>
-   <?= $page_specific_header ?>
-  <?php endif; ?>
- </div>
- <div id="nav_container">
-  <?= $nav ?>
- </div>
- <div id="content" class="content-<?= $content_page_id ?><?= ($contains_sub_nav ? ' subNav' : '')  ?>">
-  <?php if ($contains_sub_nav): ?>
-   <?= $sub_nav ?>
-  <?php endif; ?>
-  <div id="innerContent">
-   <?= $page_content ?>
+  <div id="header-links">
+   <p>
+    <a href="home">Home</a>
+   </p>
   </div>
  </div>
- <?php if ($contains_secondary_content): ?>
-  <div id="secondarycontent">
-   <?= $secondary_content ?>
-  </div>
+ <div id="header-photo">
+   <h1 id="logo-text"><a href="home" title=""><?= $organization_name ?></a></h1>
+   <h2 id="slogan"><?= $organization_slogan ?></h2>
+ </div>
+ <?php if ($has_page_specific_header): ?>
+  <?= $page_specific_header ?>
  <?php endif; ?>
- <div id="footer">
-  <?php if ($has_page_specific_footer): ?>
-   <?= $page_specific_footer ?>
-  <?php endif; ?>
-  <p>
-   <span class="copyright">Copyright &copy; <?= date('Y') ?></span> by <a href="home" class="homeLink" title="<?= $organization_name ?>"><?= $organization_full_title ?></a> All Rights Reserved.<br />
-   <a href="http://validator.w3.org/check?uri=referer" title="XHTML Validator" target="_blank">Valid XHTML</a>
-  </p>
+ <?= $nav ?>
+ <div id="content-wrap" class="content-<?= $content_page_id ?><?= ($contains_sub_nav && $contains_secondary_content ? ' three-col' : ($contains_secondary_content || $contains_sub_nav ? ' two-col' : ' one-col')) ?>">
+  <?php if ($contains_sub_nav): ?>
+  <div id="sidebar">
+    <?= $sub_nav ?>
+  </div>
+  <?php endif ?>
+
+  <?php if ($contains_secondary_content): ?>
+  <div id="<?= ($contains_sub_nav ? 'rightcolumn' : 'sidebar') ?>">
+    <?= $secondary_content ?>
+  </div>
+  <?php endif ?>
+
+  <div id="main">
+    <?= $page_content ?>
+  </div>
+ </div>
+ <div id="footer-wrap">
+   <div id="footer">
+     <p>
+      &copy; 2012 Walker Software Consulting
+            &nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="http://www.bluewebtemplates.com/" title="Website Templates" target="_blank">website templates</a> by <a href="http://www.styleshout.com/" title="styleshout templates" target="_blank">styleshout</a>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="home">Home</a> |
+            <a href="http://validator.w3.org/check?uri=referer" title="Valid XHML" target="_blank">XHTML</a> |
+      <a href="http://jigsaw.w3.org/css-validator/check/referer" title="Valid CSS" target="_blank">CSS</a>
+     </p>
+     <?php if ($has_page_specific_footer): ?>
+      <?= $page_specific_footer ?>
+     <?php endif; ?>
+   </div>
  </div>
 </div>

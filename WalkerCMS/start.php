@@ -76,7 +76,7 @@ Autoloader::map(array(
 */
 
 Autoloader::directories(array(
-path('app').'entities',
+path('app').'models',
 path('app').'helpers',
 ));
 
@@ -178,7 +178,7 @@ if ( ! Request::cli() and Config::get('session.driver') !== '')
  * Setting up dependency injection for WalkerCMS
 */
 
-require_once(path('app') . 'entities/page_model.php');
+require_once(path('app') . 'models/page_model.php');
 IoC::register('page_model', function($page)
 {
  $page_id = $page['id'];
