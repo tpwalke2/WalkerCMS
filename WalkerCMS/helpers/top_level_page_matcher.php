@@ -1,5 +1,7 @@
 <?php
-class TopLevelPageMatcher
+require_once(path('app') . 'helpers/interfaces/page_matcher.php');
+
+class TopLevelPageMatcher implements IPageMatcher
 {
  public function is_match($page, $parent)
  {

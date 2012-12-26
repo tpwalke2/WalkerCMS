@@ -1,5 +1,7 @@
 <?php
-class TopMostSubNavParentRetriever
+require_once(path('app') . 'helpers/interfaces/parent_retriever.php');
+
+class TopMostSubNavParentRetriever implements IParentRetriever
 {
  public function get_parent($pages, $page)
  {

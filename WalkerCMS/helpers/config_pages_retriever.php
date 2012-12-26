@@ -1,13 +1,24 @@
 <?php
-class ConfigPagesRetriever
+require_once(path('app') . 'helpers/interfaces/pages_retriever.php');
+
+class ConfigPagesRetriever implements IPagesRetriever
 {
+ private $_page_factory = null;
+ private $_config_adapter = null;
+ 
+ function __construct($page_factory, $config_adapter)
+ {
+  $this->_page_factory = $page_factory;
+  $this->_config_adapter = $config_adapter;
+ }
+ 
  public function get_pages()
  {
   $result = array();
 
-  foreach (Config::get('walkercms.pages') as $id => $page_definition)
+  foreach ($this->_config_adapter->get('walkercms.pages') as $id => $page_definition)
   {
-   $result[$id] = IoC::resolve('page_model', array($page_definition));
+   $result[$id] = $this->_page_factory->create($page_definition);
   }
 
   return $result;

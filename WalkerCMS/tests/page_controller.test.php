@@ -1,43 +1,30 @@
 <?php
 require_once(path('app') . 'controllers/page.php');
-require_once(path('app') . 'tests/stubs/pages_retriever.stub.php');
-require_once(path('app') . 'tests/stubs/page_id_validator.stub.php');
-require_once(path('app') . 'tests/stubs/template_data_generator.stub.php');
-require_once(path('app') . 'tests/stubs/nav_data_generator.stub.php');
-require_once(path('app') . 'tests/stubs/page_model.stub.php');
+require_once(path('app') . 'helpers/interfaces/pages_retriever.php');
+require_once(path('app') . 'helpers/page_id_validator.php');
+require_once(path('app') . 'helpers/interfaces/data_generator.php');
+require_once(path('app') . 'models/page_model.php');
 
 class TestPageController extends PHPUnit_Framework_TestCase
 {
+ private $_pages_retriever = null;
+ private $_page_id_validator = null;
+ private $_template_data_generator = null;
+ private $_nav_data_generator = null;
  private $_controller = null;
  private $_pages = null;
  private $_page_model_options = null;
 
  protected function setUp()
  {
-  $this->_pages = array();
-  $pages_ref =& $this->_pages;
-  $this->_page_model_options = array();
-  $page_model_options_ref =& $this->_page_model_options;
-
-  IoC::register('page_model', function($page_id) use (&$page_model_options_ref)
-  {
-   return new PageModel_Stub($page_id, $page_model_options_ref);
-  });
-
-  IoC::register('pages_retriever', function() use (&$pages_ref)
-  {
-   return new PagesRetriever_Stub($this->_pages);
-  });
-
-  IoC::register('page_id_validator', function()
-  {
-   return new PageIDValidator_Stub('home');
-  });
-
-  $this->_controller = new Page_Controller(new PagesRetriever_Stub($this->_pages), 
-                                           new PageIDValidator_Stub('home'),
-                                           new TemplateDataGenerator_Stub(),
-                                           new NavDataGenerator_Stub());
+  $this->_pages_retriever = $this->getMock('IPagesRetriever', array('get_pages'));
+  $this->_page_id_validator = $this->getMock('PageIDValidator', array('get_validated_page_id'));
+  $this->_template_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
+  $this->_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
+  $this->_controller = new Page_Controller($this->_pages_retriever, 
+                                           $this->_page_id_validator,
+                                           $this->_template_data_generator,
+                                           $this->_nav_data_generator);
  }
 
  public function testSomethingIsTrue()

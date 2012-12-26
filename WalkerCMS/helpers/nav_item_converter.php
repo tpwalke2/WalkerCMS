@@ -27,7 +27,7 @@ class NavItemConverter
   if ($page->has_custom_nav())
   {
    $result['has_custom_content'] = true;
-   $result['custom_content'] = $this->_custom_nav_content_retriever->retrieve($pages, $page);
+   $result['custom_content'] = $this->_custom_nav_content_retriever->retrieve_content($pages, $page);
    $result['generate_link'] = false;
   } elseif ($page->get_id() == $current_page->get_id()) {
    $result['is_active_section'] = true;

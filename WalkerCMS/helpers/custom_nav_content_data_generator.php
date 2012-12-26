@@ -1,5 +1,7 @@
 <?php
-class CustomNavContentDataGenerator
+require_once(path('app') . 'helpers/interfaces/data_generator.php');
+
+class CustomNavContentDataGenerator implements IDataGenerator
 {
  private $_nav_type = '';
 
@@ -16,5 +18,6 @@ class CustomNavContentDataGenerator
   );
  }
 }
+
 /* End of file custom_nav_content_data_generator.php */
 /* Location: ./WalkerCMS/helpers/custom_nav_content_data_generator.php */

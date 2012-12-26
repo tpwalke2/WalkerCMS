@@ -1,5 +1,5 @@
 <?php
-require_once(path('app') . 'tests/stubs/page_model.stub.php');
+require_once(path('app') . 'models/page_model.php');
 require_once(path('app') . 'helpers/custom_nav_content_data_generator.php');
 
 class TestCustomNavContentDataGenerator extends PHPUnit_Framework_TestCase
@@ -9,7 +9,7 @@ class TestCustomNavContentDataGenerator extends PHPUnit_Framework_TestCase
  
  protected function setUp()
  {
-  $this->_page = new PageModel_Stub(array('id' => 'home'));
+  $this->_page = new PageModel(array('id' => 'home'));
   $this->_generator = new CustomNavContentDataGenerator('nav');
  }
  
@@ -21,7 +21,7 @@ class TestCustomNavContentDataGenerator extends PHPUnit_Framework_TestCase
  
  public function testDifferentPageID()
  {
-  $this->_page->set_option('id', 'about');
+  $this->_page = new PageModel(array('id' => 'about'));
   $result = $this->_generator->generate_data(null, $this->_page);
   $this->assertEquals('about', $result['page_id']);
  }

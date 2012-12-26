@@ -1,6 +1,6 @@
 <?php
 require_once(path('app') . 'helpers/top_level_page_matcher.php');
-require_once(path('app') . 'tests/stubs/page_model.stub.php');
+require_once(path('app') . 'models/page_model.php');
 
 class TestTopLevelPageMatcher extends PHPUnit_Framework_TestCase
 {
@@ -9,7 +9,7 @@ class TestTopLevelPageMatcher extends PHPUnit_Framework_TestCase
  
  protected function setUp()
  {
-  $this->_page = new PageModel_Stub(array('id' => 'home', 'show_in_nav' => true));
+  $this->_page = new PageModel(array('id' => 'home', 'show_in_nav' => true));
   $this->_matcher = new TopLevelPageMatcher();
  }
  
@@ -20,14 +20,21 @@ class TestTopLevelPageMatcher extends PHPUnit_Framework_TestCase
  
  public function testPageIsNotTopLevel()
  {
-  $this->_page->set_option('parent', 'home');
-  $this->_page->set_option('id', 'about');
+  $this->_page = new PageModel(array(
+    'id' => 'about',
+    'show_in_nav' => true,
+    'parent' => 'home',
+  ));
   $this->assertFalse($this->_matcher->is_match($this->_page, null));
  }
  
  public function testPageNotVisibleInNav()
  {
-  $this->_page->set_option('show_in_nav', false);
+  $this->_page = new PageModel(array(
+    'id' => 'about',
+    'show_in_nav' => false,
+    'parent' => 'home',
+  ));
   $this->assertFalse($this->_matcher->is_match($this->_page, null));
  }
 }

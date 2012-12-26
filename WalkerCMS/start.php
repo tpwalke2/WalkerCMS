@@ -178,20 +178,28 @@ if ( ! Request::cli() and Config::get('session.driver') !== '')
  * Setting up dependency injection for WalkerCMS
 */
 
-require_once(path('app') . 'models/page_model.php');
-IoC::register('page_model', function($page)
+require_once(path('app') . 'helpers/page_factory.php');
+IoC::singleton('page_factory', function()
 {
- $page_id = $page['id'];
- $key = "page_model:$page_id";
- return Cache::remember($key, function() use ($page) {
-  return new PageModel($page);
- }, 10080);
+ return new PageFactory();
+});
+
+require_once(path('app') . 'helpers/laravel/config_adapter.php');
+IoC::singleton('config_adapter', function()
+{
+ return new ConfigAdapter();
+});
+
+require_once(path('app') . 'helpers/laravel/view_adapter.php');
+IoC::singleton('view_adapter', function()
+{
+ return new ViewAdapter();
 });
 
 require_once(path('app') . 'helpers/config_pages_retriever.php');
 IoC::singleton('pages_retriever', function()
 {
- return new ConfigPagesRetriever();
+ return new ConfigPagesRetriever(IoC::resolve('page_factory'), IoC::resolve('config_adapter'));
 });
 
 require_once(path('app') . 'helpers/page_id_validator.php');
@@ -203,7 +211,7 @@ IoC::singleton('page_id_validator', function()
 require_once(path('app') . 'helpers/template_data_generator.php');
 IoC::singleton('template_data_generator', function()
 {
- return new TemplateDataGenerator();
+ return new TemplateDataGenerator(IoC::resolve('config_adapter'));
 });
 
 require_once(path('app') . 'helpers/custom_nav_content_data_generator.php');
@@ -219,11 +227,13 @@ IoC::singleton('custom_sub_nav_content_data_generator', function()
 require_once(path('app') . 'helpers/custom_content_retriever.php');
 IoC::singleton('custom_nav_content_retriever', function()
 {
- return new CustomContentRetriever(IoC::resolve('custom_nav_content_data_generator'));
+ return new CustomContentRetriever(IoC::resolve('custom_nav_content_data_generator'),
+                                   IoC::resolve('view_adapter'));
 });
 IoC::singleton('custom_sub_nav_content_retriever', function()
 {
- return new CustomContentRetriever(IoC::resolve('custom_sub_nav_content_data_generator'));
+ return new CustomContentRetriever(IoC::resolve('custom_sub_nav_content_data_generator'),
+                                   IoC::resolve('view_adapter'));
 });
 
 require_once(path('app') . 'helpers/nav_item_converter.php');
@@ -251,7 +261,7 @@ IoC::singleton('topmost_subnav_parent_retriever', function()
 require_once(path('app') . 'helpers/nav_data_generator.php');
 IoC::singleton('nav_data_generator', function()
 {
- return new NavDataGenerator(IoC::resolve('nav_item_converter'), IoC::resolve('top_level_page_matcher'), IoC::resolve('topmost_subnav_parent_retriever'), true);
+ return new NavDataGenerator(IoC::resolve('nav_item_converter'), IoC::resolve('top_level_page_matcher'), IoC::resolve('topmost_subnav_parent_retriever'), IoC::resolve('config_adapter'), true);
 });
 IoC::singleton('sub_nav_data_generator', function()
 {

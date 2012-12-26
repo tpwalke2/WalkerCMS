@@ -106,3 +106,6 @@ class TestPageModel extends PHPUnit_Framework_TestCase
   $this->assertTrue($page->get_perform_caching());
  }
 }
+
+/* End of file page_model.test.php */
+/* Location: ./WalkerCMS/tests/page_model.test.php */
