@@ -15,15 +15,15 @@
   <?= $page_specific_header ?>
  <?php endif; ?>
  <?= $nav ?>
- <div id="content-wrap" class="content-<?= $content_page_id ?><?= ($contains_sub_nav && $contains_secondary_content ? ' three-col' : ($contains_secondary_content || $contains_sub_nav ? ' two-col' : ' one-col')) ?>">
-  <?php if ($contains_sub_nav): ?>
+ <div id="content-wrap" class="content-<?= $content_page_id ?><?= ($has_sub_nav && $has_secondary_content ? ' three-col' : ($has_secondary_content || $has_sub_nav ? ' two-col' : ' one-col')) ?>">
+  <?php if ($has_sub_nav): ?>
   <div id="sidebar">
     <?= $sub_nav ?>
   </div>
   <?php endif ?>
 
-  <?php if ($contains_secondary_content): ?>
-  <div id="<?= ($contains_sub_nav ? 'rightcolumn' : 'sidebar') ?>">
+  <?php if ($has_secondary_content): ?>
+  <div id="<?= ($has_sub_nav ? 'rightcolumn' : 'sidebar') ?>">
     <?= $secondary_content ?>
   </div>
   <?php endif ?>

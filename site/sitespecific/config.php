@@ -10,5 +10,6 @@
 
   $pages['home']          = array('menu_title' => 'Home');
   $pages['documentation'] = array('menu_title' => 'Documentation');
-  $pages['source']        = array('menu_title' => 'Source', 'external_url' => 'https://github.com/tpwalke2/WalkerCMS');
+  $pages['about']         = array('menu_title' => 'About');
+  $pages['source']        = array('menu_title' => 'Source');
 ?>

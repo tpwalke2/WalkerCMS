@@ -1,0 +1,12 @@
+<p>WalkerCMS is a file-driven content-management system (CMS). No database required.</p>
+<h2>No DB?</h2>
+<p>That's right. No database required.</p>
+<p>WalkerCMS is great for small websites that have a few pages of content and where the content
+updates are few and far between. The primary motivation has been to provide local small businesses
+with a simple web presence.</p>
+<h2>Why a CMS then?</h2>
+<p>Call me ambitiously lazy. Or, for a more positive spin, I
+<a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself" title="DRY principle">don't like 
+to repeat</a> myself. I saw that I was writing the same boilerplate code around content that only
+changed based on the link that was clicked. I realized that if the business owners wanted a change
+to the look and feel, I would have to make the change on every page.</p>
