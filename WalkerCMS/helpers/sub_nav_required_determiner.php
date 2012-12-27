@@ -15,7 +15,7 @@ class SubNavRequiredDeterminer implements IRequiredDeterminer
   if ($page == null) { throw new InvalidArgumentException('Page is null'); }
   if ($page->get_parent() != '')
   {
-   return $this->is_required($pages, $this->_parent_retriever->get_parent($pages, $page));
+   return $this->is_required($pages, $this->_parent_retriever->get_page($pages, $page));
   }
   if ($page->has_custom_sub_nav()) { return true; }
   return $page->get_sub_nav_on_page();

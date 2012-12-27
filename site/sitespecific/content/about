@@ -1,8 +1,0 @@
-<p>WalkerCMS initially started with a homebrew driver. Then a coworker showed me the
-<a href="www.codeigniter.com" title="CodeIgniter Framwork">CodeIgniter Framework</a>. I reworked
-the app to use CodeIgniter models, views, and controllers. The downside to both the homebrew and
-CodeIgniter was that unit-testing was difficult if not impossible. Later, I stumbled upon the
-<a href="http://laravel.com/" title="Laravel Framework">Laravel Framework</a> and found that unit
-testing was not only possible, but easy.</p>
-<p>WalkerCMS is currently based on Laravel 3.2.12, though there is still work to be done to
-get it feature-equivalent to the previous CodeIgniter based edition.</p>

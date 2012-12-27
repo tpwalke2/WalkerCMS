@@ -1,13 +1,13 @@
 <?php
-require_once(path('app') . 'helpers/interfaces/parent_retriever.php');
+require_once(path('app') . 'helpers/interfaces/page_retriever.php');
 
-class TopMostSubNavParentRetriever implements IParentRetriever
+class TopMostSubNavParentRetriever implements IPageRetriever
 {
- public function get_parent($pages, $page)
+ public function get_page($pages, $working_page)
  {
-  if ($page->get_sub_nav_on_page()) { return $page; }
-  if ($page->get_parent() == '') { return $page; }
-  return $this->get_parent($pages, $pages[$page->get_parent()]);
+  if ($working_page->get_sub_nav_on_page()) { return $working_page; }
+  if ($working_page->get_parent() == '') { return $working_page; }
+  return $this->get_page($pages, $pages[$working_page->get_parent()]);
  }
 }
 

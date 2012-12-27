@@ -1,13 +1,13 @@
 <?php
-require_once(path('app') . 'helpers/interfaces/parent_retriever.php');
+require_once(path('app') . 'helpers/interfaces/page_retriever.php');
 
-class ParentRetriever implements IParentRetriever
+class ParentRetriever implements IPageRetriever
 {
- public function get_parent($pages, $page)
+ public function get_page($pages, $working_page)
  {
-  if ($page->get_parent() == '') { return null; }
-  if (!isset($pages[$page->get_parent()])) { return null; }
-  return $pages[$page->get_parent()];
+  if ($working_page->get_parent() == '') { return null; }
+  if (!isset($pages[$working_page->get_parent()])) { return null; }
+  return $pages[$working_page->get_parent()];
  }
 }
 

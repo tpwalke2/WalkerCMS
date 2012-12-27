@@ -3,6 +3,7 @@ require_once(path('app') . 'helpers/interfaces/data_generator.php');
 
 class TemplateDataGenerator implements IDataGenerator
 {
+ private $_custom_content_retriever = null;
  private $_sub_nav_required_determiner = null;
  private $_config_adapter = null;
  

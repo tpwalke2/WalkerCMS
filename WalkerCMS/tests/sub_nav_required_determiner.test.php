@@ -1,6 +1,6 @@
 <?php
 require_once(path('app') . 'models/page_model.php');
-require_once(path('app') . 'helpers/interfaces/parent_retriever.php');
+require_once(path('app') . 'helpers/interfaces/page_retriever.php');
 require_once(path('app') . 'helpers/sub_nav_required_determiner.php');
 
 class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
@@ -12,7 +12,7 @@ class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
  
  protected function setUp()
  {
-  $this->_parent_retriever = $this->getMock('IParentRetriever', array('get_parent'));
+  $this->_parent_retriever = $this->getMock('IPageRetriever', array('get_page'));
   $this->_determiner = new SubNavRequiredDeterminer($this->_parent_retriever);
   $this->_pages = array();
   $this->_page = $this->getMock('PageModel', array('has_custom_sub_nav'), array(array('id' => 'home')));
@@ -21,7 +21,7 @@ class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
  public function testIsSubNavRequired_NoParent_NoCustomSubNav_HasSubNav()
  {
   $this->_parent_retriever->expects($this->any())
-                          ->method('get_parent')
+                          ->method('get_page')
                           ->will($this->returnValue(null));
   $this->_page = $this->getMock('PageModel', array('has_custom_sub_nav'), array(array('id' => 'home', 'sub_nav_on_page' => true)));
   $this->_page->expects($this->any())
@@ -33,7 +33,7 @@ class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
  public function testIsSubNavRequired_NoParent_NoCustomSubNav_NoSubNavOnPage()
  {
   $this->_parent_retriever->expects($this->any())
-                          ->method('get_parent')
+                          ->method('get_page')
                           ->will($this->returnValue(null));
   $this->_page->expects($this->any())
               ->method('has_custom_sub_nav')
@@ -44,7 +44,7 @@ class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
  public function testIsSubNavRequired_NoParent_HasCustomSubNav()
  {
   $this->_parent_retriever->expects($this->any())
-                          ->method('get_parent')
+                          ->method('get_page')
                           ->will($this->returnValue(null));
   $this->_page->expects($this->any())
               ->method('has_custom_sub_nav')
@@ -55,7 +55,7 @@ class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
  public function testIsSubNavRequired_ParentHasSubNav()
  {
   $this->_parent_retriever->expects($this->any())
-                          ->method('get_parent')
+                          ->method('get_page')
                           ->will($this->returnCallback(array($this, 'get_parent_callback')));
   $this->_page = $this->getMock('PageModel', array('has_custom_sub_nav'), array(array('id' => 'home', 'sub_nav_on_page' => true)));
   $this->_page->expects($this->any())
@@ -71,7 +71,7 @@ class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
  public function testIsSubNavRequired_ParentDoesNotHaveSubNav()
  {
   $this->_parent_retriever->expects($this->any())
-                          ->method('get_parent')
+                          ->method('get_page')
                           ->will($this->returnCallback(array($this, 'get_parent_callback')));
   $this->_page->expects($this->any())
               ->method('has_custom_sub_nav')
@@ -89,7 +89,7 @@ class TestSubNavRequiredDeterminer extends PHPUnit_Framework_TestCase
  public function testIsSubNavRequired_ParentNotFound()
  {
   $this->_parent_retriever->expects($this->any())
-                          ->method('get_parent')
+                          ->method('get_page')
                           ->will($this->returnValue(null));
   $this->_page->expects($this->any())
                ->method('has_custom_sub_nav')

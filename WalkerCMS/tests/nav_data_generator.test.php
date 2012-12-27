@@ -1,7 +1,7 @@
 <?php
 require_once(path('app') . 'helpers/nav_item_converter.php');
 require_once(path('app') . 'helpers/interfaces/page_matcher.php');
-require_once(path('app') . 'helpers/interfaces/parent_retriever.php');
+require_once(path('app') . 'helpers/interfaces/page_retriever.php');
 require_once(path('app') . 'helpers/interfaces/config_adapter.php');
 require_once(path('app') . 'models/page_model.php');
 
@@ -19,7 +19,7 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
  {
   $this->_nav_item_converter = $this->getMock('NavItemConverter', array('convert'), array(null));
   $this->_page_matcher = $this->getMock('IPageMatcher', array('is_match'));
-  $this->_parent_retriever = $this->getMock('IParentRetriever', array('get_parent'));
+  $this->_parent_retriever = $this->getMock('IPageRetriever', array('get_page'));
   $this->_config_adapter = $this->getMock('IConfigAdapter', array('get', 'set'));
   
   $this->_current_page = new PageModel(array('id' => 'home'));
@@ -75,9 +75,9 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentOrganizationName()
  {
   $this->_config_adapter->expects($this->once())
-  ->method('get')
-  ->with('walkercms.organization_name')
-  ->will($this->returnValue('Northwind'));
+                        ->method('get')
+                        ->with('walkercms.organization_name')
+                        ->will($this->returnValue('Northwind'));
  
   $result = $this->_generator->generate_data($this->_pages, $this->_current_page);
  
@@ -97,7 +97,7 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
   $nav_data = array('page_id' => 'home');
   
   $this->_parent_retriever->expects($this->once())
-                          ->method('get_parent')
+                          ->method('get_page')
                           ->with($this->_pages, $this->_current_page)
                           ->will($this->returnValue(null));
   $this->_page_matcher->expects($this->once())
@@ -120,13 +120,13 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
   $this->_pages['home'] = $this->_current_page;
   
   $this->_parent_retriever->expects($this->once())
-  ->method('get_parent')
-  ->with($this->_pages, $this->_current_page)
-  ->will($this->returnValue(null));
+                          ->method('get_page')
+                          ->with($this->_pages, $this->_current_page)
+                          ->will($this->returnValue(null));
   $this->_page_matcher->expects($this->once())
-  ->method('is_match')
-  ->with($this->_current_page, null)
-  ->will($this->returnValue(false));
+                      ->method('is_match')
+                      ->with($this->_current_page, null)
+                      ->will($this->returnValue(false));
 
   $result = $this->_generator->generate_data($this->_pages, $this->_current_page);
  
