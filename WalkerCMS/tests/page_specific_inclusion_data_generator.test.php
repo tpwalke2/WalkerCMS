@@ -15,21 +15,21 @@ class TestPageSpecificInclusionDataGenerator extends PHPUnit_Framework_TestCase
  public function testGenerateData_CorrectInclusionType()
  {
   $this->_generator = new PageSpecificInclusionDataGenerator('content');
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('content', $result['inclusion_type']);
  }
  
  public function testGenerateData_DifferentInclusionType()
  {
   $this->_generator = new PageSpecificInclusionDataGenerator('subnav');
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('subnav', $result['inclusion_type']);
  }
  
  public function testGenerateData_CorrectPageID()
  {
   $this->_generator = new PageSpecificInclusionDataGenerator('content');
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('home', $result['page_id']);
  }
  
@@ -37,7 +37,7 @@ class TestPageSpecificInclusionDataGenerator extends PHPUnit_Framework_TestCase
  {
   $this->_page = new PageModel(array('id' => 'contact'));
   $this->_generator = new PageSpecificInclusionDataGenerator('content');
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('contact', $result['page_id']);
  }
 }

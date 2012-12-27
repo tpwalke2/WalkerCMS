@@ -18,7 +18,7 @@ class NavDataGenerator implements IDataGenerator
   $this->_is_primary_nav = $is_primary_nav;
  }
 
- public function generate_data($pages, $current_page)
+ public function generate_data($pages, $current_page, $content_source_page)
  {
   return array(
     'nav_id' => ($this->_is_primary_nav ? 'nav' : 'subNav'),

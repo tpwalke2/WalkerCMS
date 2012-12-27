@@ -1,7 +1,7 @@
 <?php
 interface IPageRetriever
 {
- function get_page($pages, $working_page); 
+ function get_page($pages, $working_page);
 }
 
 /* End of file page_retriever.php */

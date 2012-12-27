@@ -10,11 +10,11 @@ class CustomNavContentDataGenerator implements IDataGenerator
   $this->_nav_type = $nav_type;
  }
 
- public function generate_data($pages, $page)
+ public function generate_data($pages, $current_page, $content_source_page)
  {
   return array(
     'inclusion_type' => $this->_nav_type,
-    'page_id'        => $page->get_id()
+    'page_id'        => $current_page->get_id()
   );
  }
 }

@@ -14,7 +14,7 @@ class CustomContentRetriever implements ICustomContentRetriever
 
  public function retrieve_content($pages, $page)
  {
-  return $this->_view_adapter->generate_view('partials.page_inclusion', $this->_data_generator->generate_data($pages, $page));
+  return $this->_view_adapter->generate_view('partials.page_inclusion', $this->_data_generator->generate_data($pages, $page, $page));
  }
 }
 

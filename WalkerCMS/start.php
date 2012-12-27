@@ -230,7 +230,8 @@ require_once(path('app') . 'helpers/template_data_generator.php');
 IoC::singleton('template_data_generator', function()
 {
  return new TemplateDataGenerator(IoC::resolve('sub_nav_required_determiner'),
-                                  IoC::resolve('config_adapter'));
+                                  IoC::resolve('config_adapter'),
+                                  IoC::resolve('logger'));
 });
 
 require_once(path('app') . 'helpers/custom_nav_content_data_generator.php');
@@ -292,6 +293,18 @@ IoC::singleton('sub_nav_data_generator', function()
  return new NavDataGenerator(IoC::resolve('sub_nav_item_converter'), IoC::resolve('page_child_matcher'), IoC::resolve('topmost_subnav_parent_retriever'), IoC::resolve('config_adapter'), false);
 });
 
+require_once(path('app') . 'helpers/first_child_page_retriever.php');
+IoC::singleton('first_child_page_retriever', function()
+{
+ return new FirstChildPageRetriever(IoC::resolve('page_child_matcher'), IoC::resolve('topmost_subnav_parent_retriever'));
+});
+
+require_once(path('app') . 'helpers/content_source_page_retriever.php');
+IoC::singleton('content_source_page_retriever', function()
+{
+ return new ContentSourcePageRetriever(IoC::resolve('first_child_page_retriever'), IoC::resolve('logger'));
+});
+
 IoC::register('controller: page', function()
 {
  return new Page_Controller(IoC::resolve('pages_retriever'),
@@ -299,5 +312,6 @@ IoC::register('controller: page', function()
    IoC::resolve('template_data_generator'),
    IoC::resolve('nav_data_generator'),
    IoC::resolve('sub_nav_data_generator'),
+   IoC::resolve('content_source_page_retriever'),
    IoC::resolve('logger'));
 });

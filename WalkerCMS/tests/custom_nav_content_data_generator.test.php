@@ -15,27 +15,27 @@ class TestCustomNavContentDataGenerator extends PHPUnit_Framework_TestCase
  
  public function testCorrectPageID()
  {
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('home', $result['page_id']);
  }
  
  public function testDifferentPageID()
  {
   $this->_page = new PageModel(array('id' => 'about'));
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('about', $result['page_id']);
  }
  
  public function testCorrectInclusionType()
  {
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('nav', $result['inclusion_type']);
  }
  
  public function testDifferentInclusionType()
  {
   $this->_generator = new CustomNavContentDataGenerator('subnav');
-  $result = $this->_generator->generate_data(null, $this->_page);
+  $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('subnav', $result['inclusion_type']);
  }
 }

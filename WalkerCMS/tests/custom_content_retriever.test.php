@@ -23,7 +23,7 @@ class TestCustomContentRetriever extends PHPUnit_Framework_TestCase
   $pages = array('home' => $page);
   $this->_data_generator->expects($this->once())
                         ->method('generate_data')
-                        ->with($this->equalTo($pages), $this->equalTo($page))
+                        ->with($this->equalTo($pages), $this->equalTo($page), $this->equalTo($page))
                         ->will($this->returnValue($data));
   $this->_view_adapter->expects($this->once())
                       ->method('generate_view')
