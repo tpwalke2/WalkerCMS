@@ -10,6 +10,8 @@
 
   $pages['home']          = array('menu_title' => 'Home');
   $pages['documentation'] = array('menu_title' => 'Documentation');
-  $pages['about']         = array('menu_title' => 'About');
+  $pages['about']         = array('menu_title' => 'About', 'sub_nav_on_page' => true);
+  $pages['history']       = array('menu_title' => 'History', 'show_in_nav' => false, 'parent' => 'about');
+  $pages['faq']           = array('menu_title' => 'FAQ', 'show_in_nav' => false, 'parent' => 'about');
   $pages['source']        = array('menu_title' => 'Source');
 ?>
