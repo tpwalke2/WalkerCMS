@@ -3,10 +3,12 @@ require_once(path('app') . 'helpers/interfaces/data_generator.php');
 
 class TemplateDataGenerator implements IDataGenerator
 {
+ private $_sub_nav_required_determiner = null;
  private $_config_adapter = null;
  
- function __construct($config_adapter)
+ function __construct($sub_nav_required_determiner, $config_adapter)
  {
+  $this->_sub_nav_required_determiner = $sub_nav_required_determiner;
   $this->_config_adapter = $config_adapter;
  }
  
@@ -33,7 +35,7 @@ class TemplateDataGenerator implements IDataGenerator
     'has_secondary_content' => $page->has_secondary_content(),
     'has_page_specific_header' => $page->has_custom_page_header(),
     'content_page_id' => $page_id, // TODO: pages that have sub Nav but no content
-    'has_sub_nav' => $page->has_custom_sub_nav(),
+    'has_sub_nav' => $this->_sub_nav_required_determiner->is_required($pages, $page),
     'has_page_specific_footer' => $page->has_custom_footer()
   );
  }

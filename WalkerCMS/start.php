@@ -190,6 +190,12 @@ IoC::singleton('config_adapter', function()
  return new ConfigAdapter();
 });
 
+require_once(path('app') . 'helpers/laravel/logger_adapter.php');
+IoC::singleton('logger', function ()
+{
+ return new LoggerAdapter();
+});
+
 require_once(path('app') . 'helpers/laravel/view_adapter.php');
 IoC::singleton('view_adapter', function()
 {
@@ -208,10 +214,23 @@ IoC::singleton('page_id_validator', function()
  return new PageIDValidator();
 });
 
+require_once(path('app') . 'helpers/parent_retriever.php');
+IoC::singleton('parent_retriever', function()
+{
+ return new ParentRetriever();
+});
+
+require_once(path('app') . 'helpers/sub_nav_required_determiner.php');
+IoC::singleton('sub_nav_required_determiner', function()
+{
+ return new SubNavRequiredDeterminer(IoC::resolve('parent_retriever'));
+});
+
 require_once(path('app') . 'helpers/template_data_generator.php');
 IoC::singleton('template_data_generator', function()
 {
- return new TemplateDataGenerator(IoC::resolve('config_adapter'));
+ return new TemplateDataGenerator(IoC::resolve('sub_nav_required_determiner'),
+                                  IoC::resolve('config_adapter'));
 });
 
 require_once(path('app') . 'helpers/custom_nav_content_data_generator.php');
@@ -251,6 +270,11 @@ IoC::singleton('top_level_page_matcher', function()
 {
  return new TopLevelPageMatcher();
 });
+require_once(path('app') . 'helpers/page_child_matcher.php');
+IoC::singleton('page_child_matcher', function()
+{
+ return new PageChildMatcher();
+});
 
 require_once(path('app') . 'helpers/topmost_subnav_parent_retriever.php');
 IoC::singleton('topmost_subnav_parent_retriever', function()
@@ -265,7 +289,7 @@ IoC::singleton('nav_data_generator', function()
 });
 IoC::singleton('sub_nav_data_generator', function()
 {
- return new NavDataGenerator(IoC::resolve('sub_nav_item_converter'), false);
+ return new NavDataGenerator(IoC::resolve('sub_nav_item_converter'), IoC::resolve('page_child_matcher'), IoC::resolve('topmost_subnav_parent_retriever'), IoC::resolve('config_adapter'), false);
 });
 
 IoC::register('controller: page', function()
@@ -273,5 +297,7 @@ IoC::register('controller: page', function()
  return new Page_Controller(IoC::resolve('pages_retriever'),
    IoC::resolve('page_id_validator'),
    IoC::resolve('template_data_generator'),
-   IoC::resolve('nav_data_generator'));
+   IoC::resolve('nav_data_generator'),
+   IoC::resolve('sub_nav_data_generator'),
+   IoC::resolve('logger'));
 });

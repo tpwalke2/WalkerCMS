@@ -3,6 +3,7 @@ require_once(path('app') . 'controllers/page.php');
 require_once(path('app') . 'helpers/interfaces/pages_retriever.php');
 require_once(path('app') . 'helpers/page_id_validator.php');
 require_once(path('app') . 'helpers/interfaces/data_generator.php');
+require_once(path('app') . 'helpers/interfaces/logger_adapter.php');
 require_once(path('app') . 'models/page_model.php');
 
 class TestPageController extends PHPUnit_Framework_TestCase
@@ -11,6 +12,8 @@ class TestPageController extends PHPUnit_Framework_TestCase
  private $_page_id_validator = null;
  private $_template_data_generator = null;
  private $_nav_data_generator = null;
+ private $_sub_nav_data_generator = null;
+ private $_logger = null;
  private $_controller = null;
  private $_pages = null;
  private $_page_model_options = null;
@@ -21,10 +24,14 @@ class TestPageController extends PHPUnit_Framework_TestCase
   $this->_page_id_validator = $this->getMock('PageIDValidator', array('get_validated_page_id'));
   $this->_template_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
+  $this->_sub_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_controller = new Page_Controller($this->_pages_retriever, 
                                            $this->_page_id_validator,
                                            $this->_template_data_generator,
-                                           $this->_nav_data_generator);
+                                           $this->_nav_data_generator,
+                                           $this->_sub_nav_data_generator,
+                                           $this->_logger);
  }
 
  public function testSomethingIsTrue()

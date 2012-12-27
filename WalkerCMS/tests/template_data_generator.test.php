@@ -1,9 +1,11 @@
 <?php
+require_once(path('app') . 'helpers/interfaces/required_determiner.php');
 require_once(path('app') . 'helpers/interfaces/config_adapter.php');
 require_once(path('app') . 'helpers/template_data_generator.php');
 
 class TestTemplateDataGenerator extends PHPUnit_Framework_TestCase
 {
+ private $_required_determiner = null;
  private $_config_adapter = null;
  private $_generator = null;
  private $_page = null;
@@ -11,11 +13,12 @@ class TestTemplateDataGenerator extends PHPUnit_Framework_TestCase
  
  protected function setUp()
  {
+  $this->_required_determiner = $this->getMock('IRequiredDeterminer', array('is_required'));
   $this->_config_adapter = $this->getMock('IConfigAdapter', array('get', 'set'));
   $this->_config_adapter->expects($this->any())
                         ->method('get')
                         ->will($this->returnCallback(array($this, 'config_get_callback')));
-  $this->_generator = new TemplateDataGenerator($this->_config_adapter);
+  $this->_generator = new TemplateDataGenerator($this->_required_determiner, $this->_config_adapter);
   $this->_page = $this->getMock('PageModel', array('has_custom_html_header',
                                                    'has_custom_css',
                                                    'has_custom_js',
@@ -273,16 +276,20 @@ class TestTemplateDataGenerator extends PHPUnit_Framework_TestCase
   $this->assertFalse($result['has_page_specific_header']);
  }
  
- public function testGenerateData_HasCustomSubNav()
+ public function testGenerateData_HasSubNav_HasRequiredSubNav()
  {
-  $this->set_page_expectations(array('has_custom_sub_nav' => true));
+  $this->_required_determiner->expects($this->once())
+                             ->method('is_required')
+                             ->will($this->returnValue(true));
   $result = $this->_generator->generate_data(null, $this->_page);
   $this->assertTrue($result['has_sub_nav']);
  }
  
- public function testGenerateData_NoCustomSubNav()
+ public function testGenerateData_HasSubNav_SubNavNotRequired()
  {
-  $this->set_page_expectations(array('has_custom_sub_nav' => false));
+  $this->_required_determiner->expects($this->once())
+                             ->method('is_required')
+                             ->will($this->returnValue(false));
   $result = $this->_generator->generate_data(null, $this->_page);
   $this->assertFalse($result['has_sub_nav']);
  }

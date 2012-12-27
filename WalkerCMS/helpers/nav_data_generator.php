@@ -34,7 +34,7 @@ class NavDataGenerator implements IDataGenerator
 
   foreach ($pages as $id=>$page)
   {
-   if ($this->_matcher->is_match($page, $this->_parent_retriever->get_parent($pages, $page)))
+   if ($this->_matcher->is_match($page, $this->_parent_retriever->get_parent($pages, $current_page)))
    {
     $result[] = $this->_nav_item_converter->convert($pages, $page, $current_page);
    }
