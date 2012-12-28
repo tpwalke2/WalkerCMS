@@ -1,1 +1,0 @@
-<?php echo view(path('site_specific') . path('template/inner_template.php'))->with(get_defined_vars())->render(); ?>
