@@ -6,6 +6,7 @@ class Page_Controller extends Base_Controller
  private $_template_data_generator = null;
  private $_nav_data_generator = null;
  private $_sub_nav_data_generator = null;
+ private $_custom_sub_nav_data_generator = null;
  private $_content_source_page_retriever = null;
  private $_logger = null;
  
@@ -14,6 +15,7 @@ class Page_Controller extends Base_Controller
                       $template_data_generator,
                       $nav_data_generator,
                       $sub_nav_data_generator,
+                      $custom_sub_nav_data_generator,
                       $content_source_page_retriever,
                       $logger)
  {
@@ -23,22 +25,35 @@ class Page_Controller extends Base_Controller
   $this->_template_data_generator = $template_data_generator;
   $this->_nav_data_generator = $nav_data_generator;
   $this->_sub_nav_data_generator = $sub_nav_data_generator;
+  $this->_custom_sub_nav_data_generator = $custom_sub_nav_data_generator;
   $this->_content_source_page_retriever = $content_source_page_retriever;
   $this->_logger = $logger;
  }
-	public function action_page($page_id = 'home')
-	{
-	 $this->_logger->debug("[WalkerCMS] Beginning generation of page: $page_id");
-	 $pages = $this->_pages_retriever->get_pages();
-	 $page_id = $this->_page_id_validator->get_validated_page_id($pages, $page_id);
-	 $this->_logger->debug("[WalkerCMS] Validated page ID: $page_id");
-	 $current_page = $pages[$page_id];
-	 $content_source_page = $this->_content_source_page_retriever->get_page($pages, $current_page);
-	 $this->_logger->debug("[WalkerCMS] Content source page ID: {$content_source_page->get_id()}");
-	 
+ 
+ public function action_page($page_id = 'home')
+ {
+  $this->_logger->debug("[WalkerCMS] Beginning generation of page: $page_id");
+  $pages = $this->_pages_retriever->get_pages();
+  $page_id = $this->_page_id_validator->get_validated_page_id($pages, $page_id);
+  $this->_logger->debug("[WalkerCMS] Validated page ID: $page_id");
+  $current_page = $pages[$page_id];
+  $content_source_page = $this->_content_source_page_retriever->get_page($pages, $current_page);
+  $this->_logger->debug("[WalkerCMS] Content source page ID: {$content_source_page->get_id()}");
+  
    $common_data = $this->_template_data_generator->generate_data($pages, $current_page, $content_source_page);
    $nav_data = $this->_nav_data_generator->generate_data($pages, $current_page, $content_source_page);
-   $sub_nav_data = $this->_sub_nav_data_generator->generate_data($pages, $current_page, $content_source_page);
+   
+   $sub_nav_data = array();
+   $sub_nav_view = 'partials.nav';
+   if ($current_page->has_custom_sub_nav())
+   {
+    $this->_logger->debug("[WalkerCMS] Custom sub nav for page '{$current_page->get_id()}'");
+    $sub_nav_data = $this->_custom_sub_nav_data_generator->generate_data($pages, $current_page, $content_source_page);
+    $sub_nav_view = 'partials.page_inclusion';
+   } else {
+    $sub_nav_data = $this->_sub_nav_data_generator->generate_data($pages, $current_page, $content_source_page);
+   }
+   $this->logger->debug("[WalkerCMS] Subnav view is '$sub_nav_view'");
    
    $content_data = array(
      'page_id' => $content_source_page->get_id(),
@@ -64,12 +79,12 @@ class Page_Controller extends Base_Controller
    return View::make('layouts.common', $common_data)
                  ->nest('page_specific_html_header', 'partials.page_inclusion', $page_specific_html_header_data)
                  ->nest('nav', 'partials.nav', $nav_data)
-                 ->nest('sub_nav', 'partials.nav', $sub_nav_data)
+                 ->nest('sub_nav', $sub_nav_view, $sub_nav_data)
                  ->nest('page_content', 'partials.page_inclusion', $content_data)
                  ->nest('secondary_content', 'partials.page_inclusion', $secondary_content_data)
                  ->nest('page_specific_header', 'partials.page_inclusion', $page_specific_header_data)
                  ->nest('page_specific_footer', 'partials.page_inclusion', $page_specific_footer_data);
-	}
+ }
 }
 
 /* End of file page.php */

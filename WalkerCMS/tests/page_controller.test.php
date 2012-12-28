@@ -14,6 +14,7 @@ class TestPageController extends PHPUnit_Framework_TestCase
  private $_template_data_generator = null;
  private $_nav_data_generator = null;
  private $_sub_nav_data_generator = null;
+ private $_custom_sub_nav_data_generator = null;
  private $_content_source_page_retriever = null;
  private $_logger = null;
  private $_controller = null;
@@ -27,6 +28,7 @@ class TestPageController extends PHPUnit_Framework_TestCase
   $this->_template_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_sub_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
+  $this->_custom_sub_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_content_source_page_retriever = $this->getMock('IPageRetriever', array('get_page'));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_controller = new Page_Controller($this->_pages_retriever, 
@@ -34,6 +36,7 @@ class TestPageController extends PHPUnit_Framework_TestCase
                                            $this->_template_data_generator,
                                            $this->_nav_data_generator,
                                            $this->_sub_nav_data_generator,
+                                           $this->_custom_sub_nav_data_generator,
                                            $this->_content_source_page_retriever,
                                            $this->_logger);
  }

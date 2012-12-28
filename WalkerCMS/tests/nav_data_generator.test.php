@@ -3,6 +3,7 @@ require_once(path('app') . 'helpers/nav_item_converter.php');
 require_once(path('app') . 'helpers/interfaces/page_matcher.php');
 require_once(path('app') . 'helpers/interfaces/page_retriever.php');
 require_once(path('app') . 'helpers/interfaces/config_adapter.php');
+require_once(path('app') . 'helpers/interfaces/logger_adapter.php');
 require_once(path('app') . 'models/page_model.php');
 
 class TestNavDataGenerator extends PHPUnit_Framework_TestCase
@@ -11,6 +12,7 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
  private $_page_matcher = null;
  private $_parent_retriever = null;
  private $_config_adapter = null;
+ private $_logger = null;
  private $_generator = null;
  private $_current_page = null;
  private $_pages = null;
@@ -21,11 +23,12 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
   $this->_page_matcher = $this->getMock('IPageMatcher', array('is_match'));
   $this->_parent_retriever = $this->getMock('IPageRetriever', array('get_page'));
   $this->_config_adapter = $this->getMock('IConfigAdapter', array('get', 'set'));
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   
   $this->_current_page = new PageModel(array('id' => 'home'));
   $this->_pages = array();
   
-  $this->_generator = new NavDataGenerator($this->_nav_item_converter, $this->_page_matcher, $this->_parent_retriever, $this->_config_adapter, true);
+  $this->_generator = new NavDataGenerator($this->_nav_item_converter, $this->_page_matcher, $this->_parent_retriever, $this->_config_adapter, true, $this->_logger);
  }
  
  public function testGenerateData_NavID_Nav()
@@ -37,7 +40,7 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
  
  public function testGenerateData_NavID_SubNav()
  {
-  $this->_generator = new NavDataGenerator($this->_nav_item_converter, $this->_page_matcher, $this->_parent_retriever, $this->_config_adapter, false);
+  $this->_generator = new NavDataGenerator($this->_nav_item_converter, $this->_page_matcher, $this->_parent_retriever, $this->_config_adapter, false, $this->_logger);
   
   $result = $this->_generator->generate_data($this->_pages, $this->_current_page, null);
   
@@ -53,7 +56,7 @@ class TestNavDataGenerator extends PHPUnit_Framework_TestCase
  
  public function testGenerateData_IsPrimaryNav_SubNav()
  {
-  $this->_generator = new NavDataGenerator($this->_nav_item_converter, $this->_page_matcher, $this->_parent_retriever, $this->_config_adapter, false);
+  $this->_generator = new NavDataGenerator($this->_nav_item_converter, $this->_page_matcher, $this->_parent_retriever, $this->_config_adapter, false, $this->_logger);
  
   $result = $this->_generator->generate_data($this->_pages, $this->_current_page, null);
  

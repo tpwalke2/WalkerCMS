@@ -2,6 +2,7 @@
 require_once(path('app') . 'helpers/interfaces/page_retriever.php');
 require_once(path('app') . 'helpers/interfaces/page_matcher.php');
 require_once(path('app') . 'helpers/first_child_page_retriever.php');
+require_once(path('app') . 'helpers/interfaces/logger_adapter.php');
 require_once(path('app') . 'models/page_model.php');
 
 class TestFirstChildPageRetriever extends PHPUnit_Framework_TestCase
@@ -9,6 +10,7 @@ class TestFirstChildPageRetriever extends PHPUnit_Framework_TestCase
  private $_matcher = null;
  private $_parent_retriever = null;
  private $_retriever = null;
+ private $_logger = null;
  private $_pages = null;
  private $_current_page = null;
  private $_parent_page = null;
@@ -17,7 +19,8 @@ class TestFirstChildPageRetriever extends PHPUnit_Framework_TestCase
  {
   $this->_matcher = $this->getMock('IPageMatcher', array('is_match'));
   $this->_parent_retriever = $this->getMock('IPageRetriever', array('get_page'));
-  $this->_retriever = new FirstChildPageRetriever($this->_matcher, $this->_parent_retriever);
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
+  $this->_retriever = new FirstChildPageRetriever($this->_matcher, $this->_parent_retriever, $this->_logger);
   $this->_current_page = new PageModel(array('id' => 'about', 'parent' => 'home'));
   $this->_parent_page = new PageModel(array('id' => 'home'));
   $this->_pages = array('home' => $this->_parent_page,

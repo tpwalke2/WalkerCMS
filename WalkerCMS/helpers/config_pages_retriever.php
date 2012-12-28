@@ -5,15 +5,18 @@ class ConfigPagesRetriever implements IPagesRetriever
 {
  private $_page_factory = null;
  private $_config_adapter = null;
+ private $_logger = null;
  
- function __construct($page_factory, $config_adapter)
+ function __construct($page_factory, $config_adapter, $logger_adapter)
  {
   $this->_page_factory = $page_factory;
   $this->_config_adapter = $config_adapter;
+  $this->_logger = $logger_adapter;
  }
  
  public function get_pages()
  {
+  $this->_logger->debug('[WalkerCMS] Retrieving pages from config');
   $result = array();
 
   foreach ($this->_config_adapter->get('walkercms.pages') as $id => $page_definition)

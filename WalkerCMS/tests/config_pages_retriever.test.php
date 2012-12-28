@@ -2,6 +2,7 @@
 require_once(path('app') . 'helpers/config_pages_retriever.php');
 require_once(path('app') . 'helpers/page_factory.php');
 require_once(path('app') . 'helpers/interfaces/config_adapter.php');
+require_once(path('app') . 'helpers/interfaces/logger_adapter.php');
 require_once(path('app') . 'models/page_model.php');
 
 class TestConfigPagesRetriever extends PHPUnit_Framework_TestCase
@@ -9,12 +10,14 @@ class TestConfigPagesRetriever extends PHPUnit_Framework_TestCase
  private $_factory = null;
  private $_retriever = null;
  private $_config_adapter = null;
+ private $_logger = null;
  
  protected function setUp()
  {
   $this->_factory = $this->getMock('PageFactory', array('create'));
   $this->_config_adapter = $this->getMock('IConfigAdapter', array('get', 'set'));
-  $this->_retriever = new ConfigPagesRetriever($this->_factory, $this->_config_adapter);
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
+  $this->_retriever = new ConfigPagesRetriever($this->_factory, $this->_config_adapter, $this->_logger);
  }
  
  public function testGetOnePage()

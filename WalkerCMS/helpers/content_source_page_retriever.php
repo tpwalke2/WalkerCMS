@@ -14,6 +14,7 @@ class ContentSourcePageRetriever implements IPageRetriever
  
  public function get_page($pages, $page)
  {
+  $this->_logger->debug("[WalkerCMS] Getting content source page for page '{$page->get_id()}'");
   if ($page->get_sub_nav_on_page() && !$page->has_content()) { return $this->_first_child_retriever->get_page($pages, $page); }
   return $page;
  }

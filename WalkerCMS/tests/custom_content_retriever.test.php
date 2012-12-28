@@ -1,25 +1,29 @@
 <?php
+require_once(path('app') . 'models/page_model.php');
 require_once(path('app') . 'helpers/custom_content_retriever.php');
 require_once(path('app') . 'helpers/interfaces/data_generator.php');
 require_once(path('app') . 'helpers/interfaces/view_adapter.php');
+require_once(path('app') . 'helpers/interfaces/logger_adapter.php');
 
 class TestCustomContentRetriever extends PHPUnit_Framework_TestCase
 {
  private $_data_generator = null;
  private $_view_adapter = null;
+ private $_logger = null;
  private $_content_retriever = null;
  
  protected function setUp()
  {
   $this->_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_view_adapter = $this->getMock('IViewAdapter', array('generate_view'));
-  $this->_content_retriever = new CustomContentRetriever($this->_data_generator, $this->_view_adapter);
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
+  $this->_content_retriever = new CustomContentRetriever($this->_data_generator, $this->_view_adapter, $this->_logger);
  }
  
  public function testRetrieveContent()
  {
   $data = array();
-  $page = array('id' => 'home');
+  $page = new PageModel(array('id' => 'home'));
   $pages = array('home' => $page);
   $this->_data_generator->expects($this->once())
                         ->method('generate_data')

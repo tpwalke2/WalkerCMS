@@ -1,16 +1,19 @@
 <?php
 require_once(path('app') . 'models/page_model.php');
+require_once(path('app') . 'helpers/interfaces/logger_adapter.php');
 require_once(path('app') . 'helpers/custom_nav_content_data_generator.php');
 
 class TestCustomNavContentDataGenerator extends PHPUnit_Framework_TestCase
 {
  private $_page = null;
+ private $_logger = null;
  private $_generator = null;
  
  protected function setUp()
  {
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_page = new PageModel(array('id' => 'home'));
-  $this->_generator = new CustomNavContentDataGenerator('nav');
+  $this->_generator = new CustomNavContentDataGenerator('nav', $this->_logger);
  }
  
  public function testCorrectPageID()
@@ -34,7 +37,7 @@ class TestCustomNavContentDataGenerator extends PHPUnit_Framework_TestCase
  
  public function testDifferentInclusionType()
  {
-  $this->_generator = new CustomNavContentDataGenerator('subnav');
+  $this->_generator = new CustomNavContentDataGenerator('subnav', $this->_logger);
   $result = $this->_generator->generate_data(null, $this->_page, null);
   $this->assertEquals('subnav', $result['inclusion_type']);
  }
