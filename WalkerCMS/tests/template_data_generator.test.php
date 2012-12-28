@@ -108,11 +108,34 @@ class TestTemplateDataGenerator extends PHPUnit_Framework_TestCase
   $this->assertEquals('WalkerCMS: Home Page', $result['page_title']);
  }
  
+ public function testGenerateData_PageTitle_HasPageTitle_HTMLEncoded()
+ {
+  $this->_config_expectations['walkercms.organization_name'] = 'Dewey, Cheatham, & Howe';
+  $this->_current_page = $this->getMock('PageModel', array('has_custom_html_header',
+                                                           'has_custom_css',
+                                                           'has_custom_js',
+                                                           'has_secondary_content',
+                                                           'has_custom_page_header',
+                                                           'has_custom_sub_nav',
+                                                           'has_custom_footer'), array(array(
+                                                             'id' => 'home',
+                                                             'page_title' => 'Services & Benefits')));
+  $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
+  $this->assertEquals('Dewey, Cheatham, &amp; Howe: Services &amp; Benefits', $result['page_title']);
+ }
+ 
  public function testGenerateData_OrganizationFullTitle()
  {
   $this->_config_expectations['walkercms.organization_full_title'] = 'WalkerCMS, Inc.';
   $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
   $this->assertEquals('WalkerCMS, Inc.', $result['organization_full_title']);
+ }
+ 
+ public function testGenerateData_OrganizationFullTitleIsHTMLEncoded()
+ {
+  $this->_config_expectations['walkercms.organization_full_title'] = 'Dewey, Cheatham, & Howe, Inc.';
+  $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
+  $this->assertEquals('Dewey, Cheatham, &amp; Howe, Inc.', $result['organization_full_title']);
  }
  
  public function testGenerateData_DifferentOrganizationFullTitle()
@@ -134,6 +157,13 @@ class TestTemplateDataGenerator extends PHPUnit_Framework_TestCase
   $this->assertEquals('WalkerCMS', $result['organization_name']);
  }
  
+ public function testGenerateData_OrganizationNameIsHTMLEncoded()
+ {
+  $this->_config_expectations['walkercms.organization_name'] = 'Dewey, Cheatham, & Howe';
+  $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
+  $this->assertEquals('Dewey, Cheatham, &amp; Howe', $result['organization_name']);
+ }
+ 
  public function testGenerateData_DifferentOrganizationName()
  {
   $this->_config_expectations['walkercms.organization_name'] = 'Northwind, LLC.';
@@ -146,6 +176,13 @@ class TestTemplateDataGenerator extends PHPUnit_Framework_TestCase
   $this->_config_expectations['walkercms.organization_slogan'] = 'Have it your way, right away.';
   $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
   $this->assertEquals('Have it your way, right away.', $result['organization_slogan']);
+ }
+ 
+ public function testGenerateData_Slogan_HTMLEncoded()
+ {
+  $this->_config_expectations['walkercms.organization_slogan'] = 'Family owned & operated.';
+  $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
+  $this->assertEquals('Family owned &amp; operated.', $result['organization_slogan']);
  }
  
  public function testGenerateData_DifferentSlogan()
@@ -169,11 +206,25 @@ class TestTemplateDataGenerator extends PHPUnit_Framework_TestCase
   $this->assertEquals('We have been serving the area\'s pest control needs for over 25 years.', $result['site_description']);
  }
  
+ public function testGenerateData_DescriptionIsHTMLEncoded()
+ {
+  $this->_config_expectations['walkercms.description'] = 'A family-owned & operated business for over 30 years.';
+  $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
+  $this->assertEquals('A family-owned &amp; operated business for over 30 years.', $result['site_description']);
+ }
+ 
  public function testGenerateData_Keywords()
  {
   $this->_config_expectations['walkercms.keywords'] = 'a few keywords';
   $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
   $this->assertEquals('a few keywords', $result['site_keywords']);
+ }
+ 
+ public function testGenerateData_KeywordsAreHTMLEncoded()
+ {
+  $this->_config_expectations['walkercms.keywords'] = 'including "quotes" & ampersands';
+  $result = $this->_generator->generate_data(null, $this->_current_page, $this->_content_source_page);
+  $this->assertEquals('including &quot;quotes&quot; &amp; ampersands', $result['site_keywords']);
  }
  
  public function testGenerateData_DifferentKeywords()
