@@ -5,6 +5,8 @@ require_once(path('app') . 'helpers/page_id_validator.php');
 require_once(path('app') . 'helpers/interfaces/data_generator.php');
 require_once(path('app') . 'helpers/interfaces/page_retriever.php');
 require_once(path('app') . 'helpers/interfaces/logger_adapter.php');
+require_once(path('app') . 'helpers/interfaces/config_adapter.php');
+require_once(path('app') . 'helpers/interfaces/cache_adapter.php');
 require_once(path('app') . 'models/page_model.php');
 
 class TestPageController extends PHPUnit_Framework_TestCase
@@ -16,6 +18,8 @@ class TestPageController extends PHPUnit_Framework_TestCase
  private $_sub_nav_data_generator = null;
  private $_custom_sub_nav_data_generator = null;
  private $_content_source_page_retriever = null;
+ private $_config = null;
+ private $_cache = null;
  private $_logger = null;
  private $_controller = null;
  private $_pages = null;
@@ -30,6 +34,8 @@ class TestPageController extends PHPUnit_Framework_TestCase
   $this->_sub_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_custom_sub_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_content_source_page_retriever = $this->getMock('IPageRetriever', array('get_page'));
+  $this->_config = $this->getMock('IConfigAdapter', array('get', 'set'));
+  $this->_cache = $this->getMock('ICacheAdapter', array('has', 'get', 'put', 'remember', 'forget'));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_controller = new Page_Controller($this->_pages_retriever, 
                                            $this->_page_id_validator,
@@ -38,6 +44,8 @@ class TestPageController extends PHPUnit_Framework_TestCase
                                            $this->_sub_nav_data_generator,
                                            $this->_custom_sub_nav_data_generator,
                                            $this->_content_source_page_retriever,
+                                           $this->_config,
+                                           $this->_cache,
                                            $this->_logger);
  }
 

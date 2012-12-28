@@ -196,6 +196,12 @@ IoC::singleton('logger', function ()
  return new LoggerAdapter();
 });
 
+require_once(path('app') . 'helpers/laravel/cache_adapter.php');
+IoC::singleton('cache_adapter', function()
+{
+ return new CacheAdapter();
+});
+
 require_once(path('app') . 'helpers/laravel/view_adapter.php');
 IoC::singleton('view_adapter', function()
 {
@@ -329,5 +335,7 @@ IoC::register('controller: page', function()
    IoC::resolve('sub_nav_data_generator'),
    IoC::resolve('custom_sub_nav_content_data_generator'),
    IoC::resolve('content_source_page_retriever'),
+   IoC::resolve('config_adapter'),
+   IoC::resolve('cache_adapter'),
    IoC::resolve('logger'));
 });
