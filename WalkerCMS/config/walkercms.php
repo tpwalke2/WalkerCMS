@@ -25,6 +25,7 @@ $pageDefaults = array(
   'sub_nav_on_page' => false,
   'perform_caching' => false
 );
+
 $pages = array(
   '403' => array(
     'page_title' => 'Unauthorized Access',
@@ -47,7 +48,7 @@ $walkercms_config = array(
   'page_cache_expiration'   => 10080,
   'contact_page'            => '',
   'contact_email'           => '',
-  'admin_email'             => 'tpwalke2@gmail.com',
+  'admin_email'             => '',
   'organization_name'       => 'Walker Software Consulting',
   'organization_full_title' => 'Walker Software Consulting',
 );

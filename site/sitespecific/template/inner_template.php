@@ -10,6 +10,7 @@
  <div id="header-photo">
    <h1 id="logo-text"><a href="home" title=""><?= $organization_name ?></a></h1>
    <h2 id="slogan"><?= $organization_slogan ?></h2>
+   <a href="https://github.com/tpwalke2/WalkerCMS" class="github-link" title="Fork me on GitHub"><img src="images/github_forkme.png" alt="Fork me on GitHub"></a>
  </div>
  <?php if ($has_page_specific_header): ?>
   <?= $page_specific_header ?>

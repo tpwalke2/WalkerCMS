@@ -467,3 +467,14 @@ ul.sidemenu li a:hover {
 .back-to-top a {
   font-size: smaller;
 }
+
+a.github-link img
+{
+  padding: 0px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border: 0px;
+  margin: 0px;
+  background: none;
+}
