@@ -40,7 +40,7 @@ $paths['sys'] = '../laravel';
 // --------------------------------------------------------------
 // The path to the bundles directory.
 // --------------------------------------------------------------
-$paths['bundle'] = 'bundles';
+$paths['bundle'] = './bundles';
 
 // --------------------------------------------------------------
 // The path to the storage directory.

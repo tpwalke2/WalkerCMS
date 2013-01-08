@@ -1,4 +1,4 @@
-var submitClicked = false;
+// TODO: minify this file
 
 $(function() {
   $('img.showpopup').each(function() {
@@ -42,58 +42,59 @@ $(function() {
     });
     return false;
   });
-
-  var contactValidationErrors = $('#contact_validation_errors')
+  
+  var contactValidationErrors = $('#contact_validation_errors');
   contactValidationErrors.hide();
-
-  $('input#contact_submission').click(function(event) {
-    contactValidationErrors.html('');
-    contactValidationErrors.hide();
-
-    var requiredControl = $('input#required_control_input').val();
-    if (requiredControl != '') {
-      addValidationError('Invalid submission');
-      return false;
+  
+  $('#contact_form').ajaxForm({
+    beforeSubmit: beforeContactSubmit,
+    success:      contactSubmitSuccess,
+    error:        contactSubmitFailed,
+    dataType:     'json',
+    data: {
+      csrf_test_name: $("input[name=csrf_token]").val()
     }
-
-    if (submitClicked) { return false; }
-
-    submitClicked = true;
-    setElementEnabled($('input#contact_submission'), false);
-
-    // TODO: when CAPTCHA gets added, make sure to add it here
-    doAJAX($('form#contact_form').attr('action'),
-           contactSubmitSuccess,
-           contactSubmitFailed,
-           {required_control: requiredControl,
-            name: $('input#name_input').val(),
-            email: $('input#email_input').val(),
-            message: $('textarea#message_input').val(),
-            ajax: true,
-            csrf_test_name: $("input[name=csrf_test_name]").val()});
-
-    event.preventDefault();
+  }).validate({
+    debug: true,
+    rules: {
+      name: "required",
+      email: {
+        required: true,
+        email: true
+      },
+      message: "required"
+    },
+    messages: {
+      name: "Please specify your name",
+      email: {
+        required: "We need your email address to contact you",
+        email: "Your email address must be in the format of name@domain.com"
+      },
+      message: "Please enter a message"
+    }
   });
 });
-
-function doAJAX(postURL, successCallback, errorCallback, postData)
-{
-  $.ajax({
-    url: postURL,
-    cache: false,
-    dataType: 'json',
-    type: 'POST',
-    success: successCallback,
-    error: errorCallback,
-    data: postData
-  });
-}
 
 function addValidationError(message)
 {
   var contactValidationErrors = $('#contact_validation_errors');
+  // TODO: If object is not available, add it to the DOM
   contactValidationErrors.append(message);
   contactValidationErrors.show();
+}
+
+function beforeContactSubmit(formData, jqForm, options)
+{
+  setElementEnabled($('input#contact_submission'), false);
+  
+  var requiredControl = $('input#required_control_input').val();
+  if (requiredControl != '') {
+    addValidationError('Invalid submission');
+    setElementEnabled($('input#contact_submission'), true);
+    return false;
+  }
+  
+  return true;
 }
 
 function contactSubmitFailed(jqXHR, textStatus, errorThrown)
@@ -101,7 +102,6 @@ function contactSubmitFailed(jqXHR, textStatus, errorThrown)
   addValidationError('Status: ' + textStatus);
   addValidationError('Error Thrown: ' + errorThrown);
 
-  submitClicked = false;
   setElementEnabled($('input#contact_submission'), true);
 }
 
@@ -109,7 +109,7 @@ function contactSubmitSuccess(data, textStatus, jqXHR)
 {
   if (data.valid_input)
   {
-    $('#contact_form_container').html(data.content);
+    $('#contact_form').parent().html(data.content);
   }
   else
   {
@@ -117,15 +117,16 @@ function contactSubmitSuccess(data, textStatus, jqXHR)
     contactValidationErrors.html(data.validation_errors);
     contactValidationErrors.show();
   }
-  submitClicked = false;
   setElementEnabled($('input#contact_submission'), true);
 }
+
+var disabled = 'disabled';
 
 function setElementEnabled(element, enabled)
 {
   if (enabled) {
-    $(element).removeAttr('disabled');
+    $(element).removeAttr(disabled);
   } else {
-    $(element).attr('disabled', 'disabled');
+    $(element).attr(disabled, disabled);
   }
 }

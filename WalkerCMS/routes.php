@@ -5,10 +5,9 @@
 | Application Routes
 |--------------------------------------------------------------------------
 */
-
-Route::controller(Controller::detect());
-Route::get('/', 'page@page');
-Route::get('/(:any)', 'page@page');
+Route::any('/', 'main@page');
+Route::post('contact_submission', array('before' => 'csrf', 'uses' => 'contact@contact_submission'));
+Route::any('(:any)', 'main@page');
 
 /*
  |--------------------------------------------------------------------------

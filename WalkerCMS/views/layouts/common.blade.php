@@ -32,6 +32,11 @@
   @if ($has_page_specific_stylesheet)
    {{ HTML::style("/styles/${page_id}.css") }}
   @endif
+  {{ HTML::script('http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js') }}
+  {{ HTML::script('/scripts/fancybox/jquery.fancybox.pack.js') }}
+  {{ HTML::script('/scripts/jquery.validate.min.js') }}
+  {{ HTML::script('/scripts/jquery.form.min.js') }}
+  {{ HTML::script('/scripts/default.js') }}
   @if ($has_page_specific_javascript)
    {{ HTML::script("/scripts/${page_id}.js") }}
   @endif

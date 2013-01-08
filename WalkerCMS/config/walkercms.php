@@ -48,7 +48,9 @@ $walkercms_config = array(
   'page_cache_expiration'   => 10080,
   'contact_page'            => '',
   'contact_email'           => '',
-  'admin_email'             => '',
+  'contact_name'            => '',
+  'admin_email'             => 'tpwalke2@gmail.com',
+  'admin_name'              => 'Tom Walker',
   'organization_name'       => 'Walker Software Consulting',
   'organization_full_title' => 'Walker Software Consulting',
 );
