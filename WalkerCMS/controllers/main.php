@@ -24,7 +24,6 @@ class Main_Controller extends Base_Controller
 
  public function action_page($page_id = 'home')
  {
-  // TODO: unit test the main controller
   $this->_logger->debug("[WalkerCMS] Requested page: $page_id");
 
   $context = $this->_context_factory->create($page_id);
