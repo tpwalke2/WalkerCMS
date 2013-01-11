@@ -46,9 +46,11 @@ class PageGenerator implements IPageGenerator
   
   $common_data = $this->_template_data_generator->generate_data($context);
   $nav_data = $this->_nav_data_generator->generate_data($current_page, $context);
+  $nav_data['nav_items'] = View::make('partials.nav', $nav_data);
   
+  // TODO: no need to show sub nav if page does not have sub nav
   $sub_nav_data = array();
-  $sub_nav_view = 'partials.nav';
+  $sub_nav_view = 'partials.nav_template';
   if ($current_page->has_custom_sub_nav())
   {
    $this->_logger->debug("[WalkerCMS] Custom sub nav for page '{$current_page->get_id()}'");
@@ -56,6 +58,7 @@ class PageGenerator implements IPageGenerator
    $sub_nav_view = 'partials.page_inclusion';
   } else {
    $sub_nav_data = $this->_sub_nav_data_generator->generate_data($current_page, $context);
+   $sub_nav_data['nav_items'] = View::make('partials.nav', $sub_nav_data);
   }
   
   $content_data = $this->_content_data_generator->generate_data($context->get_content_source_page(), $context);
@@ -66,7 +69,7 @@ class PageGenerator implements IPageGenerator
   
   return View::make('layouts.common', $common_data)
                ->nest('page_specific_html_header', 'partials.page_inclusion', $page_specific_html_header_data)
-               ->nest('nav', 'partials.nav', $nav_data)
+               ->nest('nav', 'partials.nav_template', $nav_data)
                ->nest('sub_nav', $sub_nav_view, $sub_nav_data)
                ->nest('page_content', 'partials.page_inclusion', $content_data)
                ->nest('secondary_content', 'partials.page_inclusion', $secondary_content_data)
