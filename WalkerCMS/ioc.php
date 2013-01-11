@@ -5,19 +5,19 @@ use Laravel\IoC;
  * Setting up dependency injection for WalkerCMS
 */
 
+IoC::singleton('logger', function ()
+{
+ return new LoggerAdapter();
+});
+
 IoC::singleton('page_factory', function()
 {
- return new PageFactory();
+ return new PageFactory(IoC::resolve('logger'));
 });
 
 IoC::singleton('config_adapter', function()
 {
  return new ConfigAdapter();
-});
-
-IoC::singleton('logger', function ()
-{
- return new LoggerAdapter();
 });
 
 IoC::singleton('cache_adapter', function()
@@ -77,17 +77,17 @@ IoC::singleton('pages_retriever', function()
 
 IoC::singleton('page_id_validator', function()
 {
- return new PageIDValidator();
+ return new PageIDValidator(IoC::resolve('logger'));
 });
 
 IoC::singleton('parent_retriever', function()
 {
- return new ParentRetriever();
+ return new ParentRetriever(IoC::resolve('logger'));
 });
 
 IoC::singleton('sub_nav_required_determiner', function()
 {
- return new SubNavRequiredDeterminer(IoC::resolve('parent_retriever'));
+ return new SubNavRequiredDeterminer(IoC::resolve('parent_retriever'), IoC::resolve('logger'));
 });
 
 IoC::singleton('template_data_generator', function()
@@ -105,33 +105,34 @@ IoC::singleton('custom_nav_content_retriever', function()
 });
 IoC::singleton('custom_sub_nav_content_retriever', function()
 {
- return new CustomContentRetriever(IoC::resolve('inclusion_data_generator', array('subnav')),
+ return new CustomContentRetriever(
+   IoC::resolve('inclusion_data_generator', array('subnav')),
    IoC::resolve('view_adapter'),
    IoC::resolve('logger'));
 });
 
 IoC::singleton('nav_item_converter', function()
 {
- return new NavItemConverter(IoC::resolve('custom_nav_content_retriever'));
+ return new NavItemConverter(IoC::resolve('custom_nav_content_retriever'), IoC::resolve('logger'));
 });
 IoC::singleton('sub_nav_item_converter', function()
 {
- return new NavItemConverter(IoC::resolve('custom_sub_nav_content_retriever'));
+ return new NavItemConverter(IoC::resolve('custom_sub_nav_content_retriever'), IoC::resolve('logger'));
 });
 
 IoC::singleton('top_level_page_matcher', function()
 {
- return new TopLevelPageMatcher();
+ return new TopLevelPageMatcher(IoC::resolve('logger'));
 });
 
 IoC::singleton('page_child_matcher', function()
 {
- return new PageChildMatcher();
+ return new PageChildMatcher(IoC::resolve('logger'));
 });
 
 IoC::singleton('topmost_subnav_parent_retriever', function()
 {
- return new TopMostSubNavParentRetriever();
+ return new TopMostSubNavParentRetriever(IoC::resolve('logger'));
 });
 
 IoC::singleton('nav_data_generator', function()

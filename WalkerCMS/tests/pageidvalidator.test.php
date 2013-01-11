@@ -1,17 +1,25 @@
 <?php
 class PageIDValidatorTest extends PHPUnit_Framework_TestCase
 {
+ private $_logger = null;
  private $_validator = null;
  private $_pages = null;
 
  protected function setUp()
  {
-  $this->_validator = new PageIDValidator();
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
+  $this->_validator = new PageIDValidator($this->_logger);
   $this->_pages = array(
     '404' => array(),
     'home' => array(),
     'other' => array(),
   );
+ }
+ 
+ public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_validator->get_validated_page_id($this->_pages, '');
  }
 
  public function testEmptyPageID()

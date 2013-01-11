@@ -8,7 +8,7 @@ class ConfigPagesRetrieverTest extends PHPUnit_Framework_TestCase
  
  protected function setUp()
  {
-  $this->_factory = $this->getMock('PageFactory', array('create'));
+  $this->_factory = $this->getMock('IPageFactory', array('create'));
   $this->_config_adapter = $this->getMock('IConfigAdapter', array('get', 'set'));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_retriever = new ConfigPagesRetriever($this->_factory, $this->_config_adapter, $this->_logger);

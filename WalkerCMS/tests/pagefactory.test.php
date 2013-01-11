@@ -1,11 +1,19 @@
 <?php
 class PageFactoryTest extends PHPUnit_Framework_TestCase
 {
+ private $_logger = null;
  private $_factory = null;
  
  protected function setUp()
  {
-  $this->_factory = new PageFactory();
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
+  $this->_factory = new PageFactory($this->_logger);
+ }
+ 
+ public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_factory->create(array('id' => 'home'));
  }
  
  public function testNotNull()

@@ -3,11 +3,19 @@ class TopMostSubNavParentRetrieverTest extends PHPUnit_Framework_TestCase
 {
  private $_retriever = null;
  private $_pages = array();
+ private $_logger = null;
  
  protected function setUp()
  {
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_pages['home'] = new PageModel(array('id' => 'home', 'parent' => ''));
-  $this->_retriever = new TopMostSubNavParentRetriever();
+  $this->_retriever = new TopMostSubNavParentRetriever($this->_logger);
+ }
+ 
+ public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $result = $this->_retriever->get_page($this->_pages, $this->_pages['home']);
  }
  
  public function testPageHasNoParent()

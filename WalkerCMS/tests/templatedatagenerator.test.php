@@ -52,6 +52,12 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
   return $default;
  }
  
+ public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_generator->generate_data($this->_context);
+ }
+ 
  public function testGenerateData_CorrectSite()
  {
   $this->_config_expectations['walkercms.site'] = 'WalkerCMS';

@@ -11,6 +11,13 @@ class PageSpecificInclusionDataGeneratorTest extends PHPUnit_Framework_TestCase
   $this->_page = new PageModel(array('id' => 'home'));
  }
  
+ public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_generator = new PageSpecificInclusionDataGenerator('content', $this->_logger);
+  $this->_generator->generate_data($this->_page, null);
+ }
+ 
  public function testGenerateData_CorrectInclusionType()
  {
   $this->_generator = new PageSpecificInclusionDataGenerator('content', $this->_logger);

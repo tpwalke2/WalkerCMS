@@ -43,7 +43,7 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
                                            $this->_content_source_page_retriever,
                                            $this->_logger);
  }
- 
+ // TODO: Finish tests
  public function testSomething()
  {
   $this->assertTrue(true);

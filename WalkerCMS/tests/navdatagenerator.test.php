@@ -13,7 +13,7 @@ class NavDataGeneratorTest extends PHPUnit_Framework_TestCase
  
  protected function setUp()
  {
-  $this->_nav_item_converter = $this->getMock('NavItemConverter', array('convert'), array(null));
+  $this->_nav_item_converter = $this->getMock('INavItemConverter', array('convert'));
   $this->_page_matcher = $this->getMock('IPageMatcher', array('is_match'));
   $this->_parent_retriever = $this->getMock('IPageRetriever', array('get_page'));
   $this->_config_adapter = $this->getMock('IConfigAdapter', array('get', 'set'));
@@ -25,6 +25,12 @@ class NavDataGeneratorTest extends PHPUnit_Framework_TestCase
   $this->_context->set_current_page($this->_current_page);
   
   $this->_generator = new NavDataGenerator($this->_nav_item_converter, $this->_page_matcher, $this->_parent_retriever, $this->_config_adapter, true, $this->_logger);
+ }
+ 
+ public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_generator->generate_data($this->_current_page, $this->_context);
  }
  
  public function testGenerateData_NavID_Nav()

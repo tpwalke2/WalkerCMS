@@ -22,6 +22,13 @@ class FirstChildPageRetrieverTest extends PHPUnit_Framework_TestCase
                         'about' => $this->_current_page);
  }
  
+ public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_pages = array();
+  $this->_retriever->get_page($this->_pages, $this->_current_page);
+ }
+ 
  public function testGetPage_FullExample()
  {
   $this->_parent_retriever->expects($this->once())

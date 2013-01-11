@@ -12,7 +12,7 @@ class ContextFactoryTest extends PHPUnit_Framework_TestCase
  protected function setUp()
  {
   $this->_pages_retriever = $this->getMock('IPagesRetriever', array('get_pages'));
-  $this->_page_id_validator = $this->getMock('PageIDValidator', array('get_validated_page_id'));
+  $this->_page_id_validator = $this->getMock('IPageIDValidator', array('get_validated_page_id'));
   $this->_session = $this->getMock('ISessionAdapter', array('get', 'forget'));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_factory = new ContextFactory(

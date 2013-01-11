@@ -7,6 +7,7 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  private $_context = null;
  private $_current_page = null;
  private $_content_retriever = null;
+ private $_logger = null;
 
  protected function setUp()
  {
@@ -14,7 +15,8 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
   $this->_content_retriever->expects($this->any())
                            ->method('retrieve_content')
                            ->will($this->returnValue('Custom Nav Content'));
-  $this->_converter = new NavItemConverter($this->_content_retriever);
+  $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
+  $this->_converter = new NavItemConverter($this->_content_retriever, $this->_logger);
   $this->_pages = array();
   $this->_page = $this->getMock('PageModel', array('has_custom_nav'), array(array(
     'id'           => 'a_page_id',
@@ -31,6 +33,12 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
   $this->_context = new AppContext();
   $this->_context->set_pages($this->_pages);
   $this->_context->set_current_page($this->_current_page);
+ }
+ 
+public function testLoggerInteraction()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_converter->convert($this->_page, $this->_context);
  }
 
  public function testConvertPageID()

@@ -1,15 +1,19 @@
 <?php
-class NavItemConverter
+class NavItemConverter implements INavItemConverter
 {
  private $_custom_nav_content_retriever = null;
+ private $_logger = null;
 
- function __construct($content_retriever)
+ function __construct($content_retriever, $logger)
  {
   $this->_custom_nav_content_retriever = $content_retriever;
+  $this->_logger = $logger;
  }
 
  public function convert($working_page, $context)
  {
+  $this->_logger->debug("[WalkerCMS] Converter page '{$working_page->get_id()}' into a nav item");
+  
   $result = array(
     'page_id' => $working_page->get_id(),
     'tooltip' => htmlentities($working_page->get_page_title() == '' ? $working_page->get_menu_title() : $working_page->get_page_title()),
@@ -26,6 +30,7 @@ class NavItemConverter
 
   if ($working_page->has_custom_nav())
   {
+   $this->_logger->debug('[WalkerCMS] Generating custom nav');
    $result['has_custom_content'] = true;
    $result['custom_content'] = $this->_custom_nav_content_retriever->retrieve_content($working_page, $context);
    $result['generate_link'] = false;

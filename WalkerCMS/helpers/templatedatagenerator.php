@@ -16,6 +16,7 @@ class TemplateDataGenerator implements ITemplateDataGenerator
  public function generate_data($context)
  {
   $current_page = $context->get_current_page();
+  $this->_logger->debug("[WalkerCMS] Generating template data for page '{$current_page->get_id()}'");
   $page_title = $current_page->get_page_title();
   $organization_name = $this->_config->get('walkercms.organization_name');
   $organization_full_title = $this->_config->get('walkercms.organization_full_title', $organization_name);
