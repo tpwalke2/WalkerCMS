@@ -192,7 +192,7 @@ IoC::singleton('page_generator', function()
    IoC::resolve('inclusion_data_generator', array('subnav')),
    IoC::resolve('inclusion_data_generator', array('secondarycontent')),
    IoC::resolve('inclusion_data_generator', array('footers')),
-   IoC::resolve('content_source_page_retriever'),
+   IoC::resolve('view_adapter'),
    IoC::resolve('logger'));
 });
 
@@ -201,6 +201,7 @@ IoC::register('context_factory', function()
  return new ContextFactory(
    IoC::resolve('pages_retriever'), 
    IoC::resolve('page_id_validator'),
+   IoC::resolve('content_source_page_retriever'),
    IoC::resolve('session_adapter'),
    IoC::resolve('logger'));
 });

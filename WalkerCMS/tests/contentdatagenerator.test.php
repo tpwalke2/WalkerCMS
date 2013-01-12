@@ -6,7 +6,8 @@ class ContentDataGeneratorTest extends PHPUnit_Framework_TestCase
  private $_logger = null;
  private $_generator = null;
  private $_context = null;
- private $_current_page = null;
+ private $_working_page = null;
+ private $_content_source_page = null;
  
  protected function setUp()
  {
@@ -16,31 +17,33 @@ class ContentDataGeneratorTest extends PHPUnit_Framework_TestCase
   
   $this->_generator = new ContentDataGenerator($this->_inner_data_generator, $this->_contact_form_data_generator, $this->_logger);
   $this->_context = new AppContext();
-  $this->_current_page = new PageModel(array('id' => 'contact'));
+  $this->_working_page = new PageModel(array('id' => 'contact_parent'));
+  $this->_content_source_page = new PageModel(array('id' => 'contact'));
+  $this->_context->set_content_source_page($this->_content_source_page);
  }
  
  public function testGenerateData_UseLogger()
  {
   $this->_logger->expects($this->atLeastOnce())->method('debug');
   
-  $result = $this->_generator->generate_data($this->_current_page, $this->_context);
+  $result = $this->_generator->generate_data($this->_working_page, $this->_context);
  }
  
  public function testGenerateData_ContactFormGenerated()
  {
-  $inner_data = array('inclusion_type' => 'content', 'page_id' => $this->_current_page->get_id());
+  $inner_data = array('inclusion_type' => 'content', 'page_id' => 'contact');
   $this->_inner_data_generator->expects($this->once())
                               ->method('generate_data')
-                              ->with($this->equalTo($this->_current_page),
+                              ->with($this->equalTo($this->_content_source_page),
                                      $this->equalTo($this->_context))
                               ->will($this->returnValue($inner_data));
   $contact_form_data = array('contact_form' => array());
   $this->_contact_form_data_generator->expects($this->once())
                                      ->method('generate_data')
-                                     ->with($this->equalTo($this->_current_page),
+                                     ->with($this->equalTo($this->_content_source_page),
                                             $this->equalTo($this->_context))
                                      ->will($this->returnValue($contact_form_data));
-  $result = $this->_generator->generate_data($this->_current_page, $this->_context);
+  $result = $this->_generator->generate_data($this->_working_page, $this->_context);
   
   $this->assertEquals('content', $result['inclusion_type']);
   $this->assertEquals('contact', $result['page_id']);
@@ -49,18 +52,18 @@ class ContentDataGeneratorTest extends PHPUnit_Framework_TestCase
  
  public function testGenerateData_ContactFormNotGenerated()
  {
-  $inner_data = array('inclusion_type' => 'content', 'page_id' => $this->_current_page->get_id());
+  $inner_data = array('inclusion_type' => 'content', 'page_id' => 'contact');
   $this->_inner_data_generator->expects($this->once())
                               ->method('generate_data')
-                              ->with($this->equalTo($this->_current_page),
+                              ->with($this->equalTo($this->_content_source_page),
                                      $this->equalTo($this->_context))
                               ->will($this->returnValue($inner_data));
   $this->_contact_form_data_generator->expects($this->once())
                                      ->method('generate_data')
-                                     ->with($this->equalTo($this->_current_page),
+                                     ->with($this->equalTo($this->_content_source_page),
                                             $this->equalTo($this->_context))
                                      ->will($this->returnValue(null));
-  $result = $this->_generator->generate_data($this->_current_page, $this->_context);
+  $result = $this->_generator->generate_data($this->_working_page, $this->_context);
   
   $this->assertEquals('content', $result['inclusion_type']);
   $this->assertEquals('contact', $result['page_id']);

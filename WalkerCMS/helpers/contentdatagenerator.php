@@ -14,9 +14,10 @@ class ContentDataGenerator implements IDataGenerator
  
  public function generate_data($working_page, $context)
  {
-  $this->_logger->debug("[WalkerCMS] Generating content data for page '{$working_page->get_id()}'");
-  $result = $this->_inclusion_generator->generate_data($working_page, $context);
-  $contact_form_data = $this->_contact_form_generator->generate_data($working_page, $context);
+  $content_source_page = $context->get_content_source_page();
+  $this->_logger->debug("[WalkerCMS] Generating content data for page '{$content_source_page->get_id()}'");
+  $result = $this->_inclusion_generator->generate_data($content_source_page, $context);
+  $contact_form_data = $this->_contact_form_generator->generate_data($content_source_page, $context);
   
   if ($contact_form_data == null) { return $result; }
   return array_merge($result, $contact_form_data);  
