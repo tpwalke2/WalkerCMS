@@ -26,6 +26,6 @@
   @endif
   <br />
   <span class="contact_legend">All fields required.</span><br />
-  <input id="contact_submission" class="button" type="submit" />
+  <input id="contact_submission" class="button" type="submit" value="Send" />
 </p>
 {{ Form::close() }}

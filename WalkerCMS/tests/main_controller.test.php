@@ -5,6 +5,7 @@ class MainControllerTest extends PHPUnit_Framework_TestCase
  private $_page_generator = null;
  private $_config = null;
  private $_cache = null;
+ private $_response = null;
  private $_logger = null;
  private $_controller = null;
  private $_pages = null;
@@ -20,12 +21,14 @@ class MainControllerTest extends PHPUnit_Framework_TestCase
                 ->method('get')
                 ->will($this->returnCallback(array($this, 'config_get_callback')));
   $this->_cache = $this->getMock('ICacheAdapter', array('has', 'get', 'put', 'remember', 'forget'));
+  $this->_response = $this->getMock('IResponseAdapter', array('send_json', 'error'));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_controller = new Main_Controller(
     $this->_context_factory,
     $this->_page_generator,
     $this->_config,
     $this->_cache,
+    $this->_response,
     $this->_logger
     );
   
@@ -156,6 +159,18 @@ class MainControllerTest extends PHPUnit_Framework_TestCase
   
   $result = $this->_controller->action_page('about');
   $this->assertSame($generated_page, $result);
+ }
+ 
+ public function testInvalidMethod()
+ {
+  $this->_logger->expects($this->atLeastOnce())->method('error');
+  $error_response = array('error');
+  $method_info = array('method' => 'invalid', 'parameters' => array('param1', 'param2'));
+  $this->_response->expects($this->once())
+                  ->method('error')
+                  ->with(404, $this->equalTo($method_info))
+                  ->will($this->returnValue($error_response));
+  $this->assertEquals($error_response, $this->_controller->invalid('param1', 'param2'));
  }
 }
 

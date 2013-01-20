@@ -5,21 +5,20 @@ class Main_Controller extends Base_Controller
  private $_page_generator = null;
  private $_config = null;
  private $_cache = null;
- private $_logger = null;
-
+ 
  function __construct(
    $context_factory,
    $page_generator,
    $config,
    $cache,
+   $response,
    $logger)
  {
-  parent::__construct();
+  parent::__construct($response, $logger);
   $this->_context_factory = $context_factory;
   $this->_page_generator = $page_generator;
   $this->_config = $config;
   $this->_cache = $cache;
-  $this->_logger = $logger;
  }
 
  public function action_page($page_id = 'home')

@@ -7,6 +7,11 @@ class ResponseAdapter implements IResponseAdapter
  {
   return Response::json($data);
  }
+ 
+ public function error($code, $data = array())
+ {
+  return Response::error($code, $data);
+ }
 }
 
 /* End of file responseadapter.php */

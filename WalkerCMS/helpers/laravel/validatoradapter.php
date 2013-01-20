@@ -5,7 +5,7 @@ class ValidatorAdapter implements IValidatorAdapter
 {
  public function create_validator($input, $rules)
  {
-  return Validator::make($input, $rules);
+  return new ValidationWrapper(Validator::make($input, $rules));
  }
 }
 

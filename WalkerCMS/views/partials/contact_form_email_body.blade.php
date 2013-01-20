@@ -10,8 +10,8 @@ Message:
 
 --------------------BEGIN DEBUGGING INFO------------------
 
-Spam prevention: '{{ $required_control }}'
-IP Address: {{ $submitter_ip }}
-User-Agent: {{ $submitter_user_agent }}
+Spam prevention: '{{ $spam_control }}'
+IP Address: '{{ $ip_address }}'
+User-Agent: '{{ $user_agent }}'
 
 ---------------------END DEBUGGING INFO-------------------
