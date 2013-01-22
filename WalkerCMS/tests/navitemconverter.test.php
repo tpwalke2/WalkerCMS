@@ -11,6 +11,7 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
 
  protected function setUp()
  {
+  $GLOBALS['laravel_paths']['site_specific'] = '';
   $this->_content_retriever = $this->getMock('ICustomContentRetriever', array('retrieve_content'));
   $this->_content_retriever->expects($this->any())
                            ->method('retrieve_content')
