@@ -33,6 +33,7 @@
    {{ HTML::style("/styles/${page_id}.css") }}
   @endif
   {{ HTML::script('http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js') }}
+  {{ HTML::style("/scripts/fancybox/jquery.fancybox.css") }}
   {{ HTML::script('/scripts/fancybox/jquery.fancybox.pack.js') }}
   {{ HTML::script('/scripts/jquery.validate.min.js') }}
   {{ HTML::script('/scripts/jquery.form.min.js') }}
