@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<project name="WalkerCMS.master" default="">
+  <property name="msbuild.path" value="C:\Windows\Microsoft.NET\Framework\v4.0.30319" />
+  <property name="base.path" overwrite="false" value="" />
+  <property name="staging.path" overwrite="false" value="" />
+  <property name="system.test.output.path" overwrite="false" value="" />
+  <property name="php.path" overwrite="false" value="" />
+  <property name="verbose.output" overwrite="false" value="false" />
+  <property name="Is64BitOperatingSystem" value="false" />
+  <property name="Is64BitProcess" value="false" />
+  <property name="IsWow64Process" value="false" />
+  
+  <echo>**************************</echo>
+  <echo>Staging Path: '${staging.path}'</echo>
+  <echo>Base Path: '${base.path}'</echo>
+  <echo>System Test Output Path: '${system.test.output.path}'</echo>
+  <echo>PHP Path: '${php.path}'</echo>
+  <echo>Verbose: '${verbose.output}'</echo>
+  <echo>**************************</echo>
+   
+  <target name="DetectOperatingSystemArchitecture" depends="DetectIfWow64Process,DetectIf64BitProcess">
+    <description>
+      This will detect whether the current Operating System is running as a 32-bit or 64-bit Operating System regardless of whether this is a 32-bit or 64-bit process.
+    </description>
+    <property name="Is64BitOperatingSystem" value="${IsWow64Process or Is64BitProcess}" />
+   
+    <choose>
+      <when test="${Is64BitOperatingSystem}">
+        <echo message="The operating system you are running is 64-bit." />
+      </when>
+      <otherwise>
+        <echo message="The operating system you are running is 32-bit." />
+      </otherwise>
+    </choose>
+  </target>
+   
+  <script language="C#" prefix="MyWin32Calls">
+    <references>
+      <include name="System.dll" />
+    </references>
+    <code>
+      <![CDATA[
+        [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        public static extern bool IsWow64Process(System.IntPtr hProcess, out bool lpSystemInfo);
+   
+        [Function("IsWow64Process")]
+        public bool IsWow64Process()
+        {
+          bool retVal = false;
+   
+          IsWow64Process(System.Diagnostics.Process.GetCurrentProcess().Handle, out retVal);
+   
+          return retVal;
+        }
+        ]]>
+    </code>
+  </script>
+   
+  <target name="DetectIfWow64Process">
+    <description>
+      Detects whether we are currently in a WoW64 process or not.
+    </description>
+   
+    <property name="IsWow64Process" value="${MyWin32Calls::IsWow64Process()}" />
+    <echo message="Setting the [IsWow64Process] property to ${IsWow64Process}." />
+  </target>
+   
+  <target name="DetectIf64BitProcess">
+    <description>
+      Detects whether we are currently in a 32-bit or 64-bit process (not necessarily what the OS is running). Note that as of the time of this writing, this will ALWAYS return false because NAnt is compiled to run in 32-bit mode only.
+    </description>
+   
+    <!-- This can return x86, x64, AMD64, or IA64 as of the time of this writing. This works for a 32-bit process in a 64-bit OS because the OS makes the 64-bitness transparent to the process in this environment variable. -->
+    <property name="Is64BitProcess" value="${environment::get-variable('PROCESSOR_ARCHITECTURE')!='x86'}" />
+    <echo message="Setting the [Is64BitProcess] property to ${Is64BitProcess}." />
+  </target>
+
+  <target name="test" description="Run unit tests on CMS.">
+    <exec program="php.exe"
+          basedir="${php.path}"
+          workingdir="${base.path}\WalkerCMS"
+          failonerror="true"
+          verbose="${verbose.output}">
+      <arg value="artisan" />
+      <arg value="test" />
+    </exec>
+  </target>
+  
+  <target name="cleanUITests" description="Delete all previously compiled UI test assemblies and supporting files.">
+    <!-- Ensure all files and folders in output path are writable -->
+    <attrib readonly="false" if="${directory::exists(system.test.output.path)}" verbose="${verbose.output}">
+      <fileset basedir="${system.test.output.path}">
+        <include name="**\*" />
+        <exclude name="testsettings.config" />
+      </fileset>
+    </attrib>
+    
+    <!-- Delete all files and folders from test output path -->
+    <delete if="${directory::exists(system.test.output.path)}" verbose="${verbose.output}">
+      <fileset basedir="${system.test.output.path}">
+        <include name="**\*" />
+        <exclude name="testsettings.config" />
+      </fileset>
+    </delete>
+  </target>
+  
+  <target name="compileTestEngine" description="Compile test engine in debug mode" depends="cleanUITests, DetectOperatingSystemArchitecture">
+		<echo>Compiling UI Test Engine</echo>
+      <exec program="msbuild.exe"
+            basedir="${msbuild.path}"
+            workingdir="WCMS.UITestEngine\"
+            verbose="${verbose.output}">
+      <arg value="WCMS.UITestEngine.csproj" />
+      <arg value="/p:Configuration=Debug" />
+      <arg value="/p:OutputPath=${system.test.output.path}" />
+      <arg value="/v:quiet" />
+      <arg value="/nologo" />
+    </exec>
+    
+    <property name="os.architecture.path" value="32-bit" />
+    <property name="os.architecture.path" value="64-bit" if="${Is64BitOperatingSystem}" />
+    
+    <copy todir="${system.test.output.path}" overwrite="true" verbose="${verbose.output}">
+      <fileset basedir="WCMS.UITestEngine\lib\${os.architecture.path}">
+        <include name="IEDriverServer.exe" />
+      </fileset>
+    </copy>
+	</target>
+  
+  <target name="cleanStagingArea" description="Delete all previously staged folders.">
+    <!-- Ensure all files and folders in staging path are writable -->
+    <attrib readonly="false" if="${directory::exists(staging.path)}" verbose="${verbose.output}">
+      <fileset basedir="${staging.path}">
+        <include name="**\*" />
+      </fileset>
+    </attrib>
+
+    <!-- Remove everything from the staging paths except index.php -->
+    <foreach item="Folder" in="${staging.path}" property="site.path" if="${directory::exists(staging.path)}" verbose="${verbose.output}">
+      <echo>Deleting from '${site.path}'</echo>
+      <delete if="${directory::exists(site.path)}" verbose="${verbose.output}">
+        <fileset basedir="${site.path}">
+          <include name="**\*" />
+          <exclude name="**\paths.php" unless="${string::ends-with(site.path, 'WalkerCMS')}" />
+        </fileset>
+      </delete>
+    </foreach>
+
+    <mkdir dir="${staging.path}" unless="${directory::exists(staging.path)}" verbose="${verbose.output}" />
+  </target>
+
+  <target name="stage" description="Stage WalkerCMS for testing." depends="cleanStagingArea">
+    <copy todir="${staging.path}\WalkerCMS" includeemptydirs="false" overwrite="true" verbose="${verbose.output}">  
+      <fileset basedir="${base.path}">
+        <include name="**\laravel\*" />
+        <include name="**\WalkerCMS\*" />
+        <exclude name="**\coverage-reports\*" />
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="default" depends="test, cleanUITests, compileTestEngine, cleanStagingArea, stage" />
+</project>

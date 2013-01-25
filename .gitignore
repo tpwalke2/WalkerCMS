@@ -2,3 +2,5 @@
 /.buildpath
 /.settings
 coverage-reports
+/WCMS.UITestEngine/bin
+/WCMS.UITestEngine/obj

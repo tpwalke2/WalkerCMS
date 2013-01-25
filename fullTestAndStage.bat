@@ -1,0 +1,1 @@
+nant -D:base.path="C:\Source\master\WalkerCMS" -D:staging.path="C:\staging\master\Websites" -D:system.test.output.path="C:\source\master\SystemTests" -D:php.path="C:\php" default > results.txt
