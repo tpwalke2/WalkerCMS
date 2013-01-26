@@ -141,7 +141,7 @@
       <delete if="${directory::exists(site.path)}" verbose="${verbose.output}">
         <fileset basedir="${site.path}">
           <include name="**\*" />
-          <exclude name="**\paths.php" unless="${string::ends-with(site.path, 'WalkerCMS')}" />
+          <exclude name="**\index.php" unless="${string::ends-with(site.path, 'WalkerCMS')}" />
         </fileset>
       </delete>
     </foreach>
