@@ -152,9 +152,9 @@
   <target name="stage" description="Stage WalkerCMS for testing." depends="cleanStagingArea">
     <copy todir="${staging.path}\WalkerCMS" includeemptydirs="false" overwrite="true" verbose="${verbose.output}">  
       <fileset basedir="${base.path}">
-        <include name="**\laravel\*" />
-        <include name="**\WalkerCMS\*" />
-        <exclude name="**\coverage-reports\*" />
+        <include name="**\laravel\**\*" />
+        <include name="**\WalkerCMS\**\*" />
+        <exclude name="**\coverage-reports\**\*" />
       </fileset>
     </copy>
   </target>
