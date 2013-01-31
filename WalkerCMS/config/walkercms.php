@@ -1,21 +1,5 @@
 <?php
-
-function merge_configs($pages, $pageDefaults, &$config) {
- foreach ($pages as $pageID=>$page) {
-  $config['pages'][$pageID] = array();
-  $config['pages'][$pageID]['id'] = $pageID;
-
-  foreach ($pageDefaults as $key=>$val) {
-   $config['pages'][$pageID][$key] = $val;
-  }
-
-  foreach ($page as $key=>$val) {
-   $config['pages'][$pageID][$key] = $val;
-  }
- }
-}
-
-$pageDefaults = array(
+$page_defaults = array(
   'parent'          => '',
   'page_title'      => '',
   'menu_title'      => '',
@@ -58,9 +42,8 @@ $walkercms_config = array(
 
 require_once(path('site_specific') . 'config.php');
 
-merge_configs($pages, $pageDefaults, $walkercms_config);
-
-return $walkercms_config;
+$merger = new ConfigMerger();
+return $merger->merge($pages, $page_defaults, $walkercms_config);
 
 /* End of file walkercms.php */
 /* Location: ./WalkerCMS/config/walkercms.php */

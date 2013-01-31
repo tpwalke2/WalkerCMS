@@ -9,8 +9,8 @@
   $walkercms_config['contact_email'] = '';
   $walkercms_config['contact_name']  = '';
 
-  $pageDefaults['perform_caching'] = false;
-  $pageDefaults['show_in_nav'] = true;
+  $page_defaults['perform_caching'] = false;
+  $page_defaults['show_in_nav'] = true;
 
   $pages['home'] = array('menu_title' => 'Home');
   
