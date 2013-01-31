@@ -9,6 +9,7 @@ foreach ($nav_items as $index => $nav_item):
   $externalTarget = ($nav_item['is_external'] ? ' target="_blank"' : '');
   $inner = "<a href=\"{$nav_item['url']}\" title=\"$organization_name - {$nav_item['tooltip']}$externalIndicator\"$externalTarget>$inner</a>";
  endif;
- $selected_class = ($nav_item['is_active_section'] ? 'currently-selected' : 'unselected'); ?>
- <li id="nav_{{ $nav_item['page_id'] }}" class="item{{ $index + 1 }} {{ $selected_class }}">{{ $inner }}</li>
+ $selected_class = ($nav_item['is_active_section'] ? 'currently-selected' : 'unselected');
+ $last_class = (($index == (count($nav_items) - 1)) ? 'last' : ''); ?>
+ <li id="nav_{{ $nav_item['page_id'] }}" class="item{{ $index + 1 }} {{ $selected_class }} {{ $last_class }}">{{ $inner }}</li>
 @endforeach

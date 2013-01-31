@@ -42,6 +42,7 @@ $pages = array(
 );
 
 $walkercms_config = array(
+  'version'                 => '0.5',
   'site'                    => 'walkercms',
   'show_ie_warning'         => true,
   'minimum_ie_version'      => '7',
