@@ -34,10 +34,10 @@ $walkercms_config = array(
   'contact_page'            => '',
   'contact_email'           => '',
   'contact_name'            => '',
-  'admin_email'             => 'tpwalke2@gmail.com',
-  'admin_name'              => 'Tom Walker',
-  'organization_name'       => 'Walker Software Consulting',
-  'organization_full_title' => 'Walker Software Consulting',
+  'admin_email'             => '',
+  'admin_name'              => '',
+  'organization_name'       => 'WalkerCMS',
+  'organization_full_title' => 'WalkerCMS',
 );
 
 require_once(path('site_specific') . 'config.php');
