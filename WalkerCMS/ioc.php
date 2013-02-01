@@ -225,6 +225,7 @@ IoC::singleton('content_data_generator', function()
  return new ContentDataGenerator(
    IoC::resolve('inclusion_data_generator', array('content')),
    IoC::resolve('contact_form_generator'),
+   IoC::resolve('config_adapter'),
    IoC::resolve('logger'));
 });
 
