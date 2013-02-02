@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
  <!-- Generated on {{ date('l\, \t\h\e jS \o\f F Y \a\t g:i:s A T') }} -->
@@ -24,20 +23,20 @@
   <meta name="copyright" content="Copyright &copy; {{ date('Y') }} by {{ $organization_full_title }} All Rights Reserved." />
   <meta name="description" content="{{ $site_description }}" />
   <meta name="keywords" content="{{ $site_keywords }}" />
-  @if ($has_page_specific_html_header)
-   {{ $page_specific_html_header }}
-  @endif
   {{ HTML::style('/styles/default.css') }}
   {{ HTML::style('/styles/site.css') }}
-  @if ($has_page_specific_stylesheet)
-   {{ HTML::style("/styles/${page_id}.css") }}
-  @endif
   {{ HTML::script('http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js') }}
   {{ HTML::style("/scripts/fancybox/jquery.fancybox.css") }}
   {{ HTML::script('/scripts/fancybox/jquery.fancybox.pack.js') }}
   {{ HTML::script('/scripts/jquery.validate.min.js') }}
   {{ HTML::script('/scripts/jquery.form.min.js') }}
   {{ HTML::script('/scripts/default.js') }}
+  @if ($has_page_specific_html_header)
+   {{ $page_specific_html_header }}
+  @endif
+  @if ($has_page_specific_stylesheet)
+   {{ HTML::style("/styles/${page_id}.css") }}
+  @endif
   @if ($has_page_specific_javascript)
    {{ HTML::script("/scripts/${page_id}.js") }}
   @endif
