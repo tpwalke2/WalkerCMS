@@ -26,18 +26,18 @@ $pages = array(
 );
 
 $walkercms_config = array(
-  'version'                 => '0.5',
-  'site'                    => 'walkercms',
-  'show_ie_warning'         => true,
-  'minimum_ie_version'      => '7',
-  'page_cache_expiration'   => 10080,
-  'contact_page'            => '',
-  'contact_email'           => '',
-  'contact_name'            => '',
-  'admin_email'             => '',
-  'admin_name'              => '',
-  'organization_name'       => 'WalkerCMS',
-  'organization_full_title' => 'WalkerCMS',
+  'version'                        => '0.5',
+  'site'                           => 'walkercms',
+  'show_ie_warning'                => true,
+  'maximum_unsupported_ie_version' => '7',
+  'page_cache_expiration'          => 10080,
+  'contact_page'                   => '',
+  'contact_email'                  => '',
+  'contact_name'                   => '',
+  'admin_email'                    => '',
+  'admin_name'                     => '',
+  'organization_name'              => 'WalkerCMS',
+  'organization_full_title'        => 'WalkerCMS',
 );
 
 require_once(path('site_specific') . 'config.php');

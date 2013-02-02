@@ -319,18 +319,18 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
   $this->assertFalse($result['show_ie_warning']);
  }
  
- public function testGenerateData_IEWarningMinimumVersion()
+ public function testGenerateData_IEWarningMaximumUnsupportedVersion()
  {
-  $this->_config_expectations['walkercms.minimum_ie_version'] = '7';
+  $this->_config_expectations['walkercms.maximum_unsupported_ie_version'] = '7';
   $result = $this->_generator->generate_data($this->_context);
-  $this->assertEquals('7', $result['minimum_ie_version']);
+  $this->assertEquals('7', $result['maximum_unsupported_ie_version']);
  }
  
  public function testGenerateData_DifferentIEWarningMinimumVersion()
  {
-  $this->_config_expectations['walkercms.minimum_ie_version'] = '6';
+  $this->_config_expectations['walkercms.maximum_unsupported_ie_version'] = '6';
   $result = $this->_generator->generate_data($this->_context);
-  $this->assertEquals('6', $result['minimum_ie_version']);
+  $this->assertEquals('6', $result['maximum_unsupported_ie_version']);
  }
  
  public function testGenerateData_HasSecondaryContent()

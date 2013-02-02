@@ -34,7 +34,7 @@ class TemplateDataGenerator implements ITemplateDataGenerator
     'has_page_specific_javascript' => $current_page->has_custom_js(),
     'has_contact_form' => ($this->_config->get('walkercms.contact_page') == $context->get_current_page()->get_id()),
     'show_ie_warning' => $this->_config->get('walkercms.show_ie_warning'),
-    'minimum_ie_version' => $this->_config->get('walkercms.minimum_ie_version'),
+    'maximum_unsupported_ie_version' => $this->_config->get('walkercms.maximum_unsupported_ie_version'),
     'has_secondary_content' => $current_page->has_secondary_content(),
     'has_page_specific_header' => $current_page->has_custom_page_header(),
     'content_page_id' => $context->get_content_source_page()->get_id(),
