@@ -1,11 +1,15 @@
 <?php
+use Laravel\Config;
 use Laravel\Log;
 
 class LoggerAdapter implements ILoggerAdapter
 {
  public function debug($msg)
  {
-  Log::debug($msg);
+  if (strtolower(Config::get('walkercms.log_level', 'error')) == 'debug')
+  {
+   Log::debug($msg);
+  }
  }
  
  public function error($msg)
@@ -15,4 +19,3 @@ class LoggerAdapter implements ILoggerAdapter
 }
 
 /* End of file loggeradapter.php */
-/* Location: ./WalkerCMS/Helpers/Laravel/loggeradapter.php */

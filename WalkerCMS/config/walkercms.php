@@ -5,9 +5,10 @@ $page_defaults = array(
   'menu_title'      => '',
   'external_url'    => '',
   'override_url'    => '',
+  'log_level'       => 'error',
   'show_in_nav'     => false,
   'sub_nav_on_page' => false,
-  'perform_caching' => false
+  'perform_caching' => false,
 );
 
 $pages = array(
