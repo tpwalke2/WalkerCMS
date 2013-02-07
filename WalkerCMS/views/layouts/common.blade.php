@@ -4,6 +4,7 @@
  <!-- Generated on {{ date('l\, \t\h\e jS \o\f F Y \a\t g:i:s A T') }} -->
  <head>
   <title>{{ $page_title }}</title>
+  <meta http-equiv="Content-type" content="text/html;charset=UTF-8">
   <meta name="robots" content="index, follow" />
   <meta name="generator" content="WalkerCMS" />
   <meta name="author" content="Walker Software Consulting" />
