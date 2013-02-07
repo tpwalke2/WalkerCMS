@@ -42,7 +42,7 @@ ul.linearList li {
 input.error, textarea.error
 {
   color: #000000;
-  border: 1px: solid #ff0000;
+  border: 1px solid #ff0000;
 }
 
 input.submission-control {
@@ -56,5 +56,5 @@ input.submission-control {
 
 span.contact_legend
 {
-  font-size: smallest;
+  font-size: xx-small;
 }
