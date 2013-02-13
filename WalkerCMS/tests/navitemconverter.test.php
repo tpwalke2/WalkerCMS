@@ -6,6 +6,7 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  private $_page = null;
  private $_context = null;
  private $_current_page = null;
+ private $_content_source_page = null;
  private $_content_retriever = null;
  private $_logger = null;
  private $_has_custom_nav = false;
@@ -32,9 +33,13 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'id' => 'other_id',
     'parent' => '',
   ));
+  $this->_content_source_page = new PageModel(array(
+    'id' => 'content_source_id',
+    'parent' => 'other_id'));
   $this->_context = new AppContext();
   $this->_context->set_pages($this->_pages);
   $this->_context->set_current_page($this->_current_page);
+  $this->_context->set_content_source_page($this->_content_source_page);
  }
  
  public function has_custom_nav_callback()
@@ -370,6 +375,20 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
   )));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('', $result['custom_content']);
+ }
+ 
+ public function testActiveSection_NoCustomContent_ProcessedPageIsContentSourcePage()
+ {
+  $this->_context->set_content_source_page($this->_page);
+  $result = $this->_converter->convert($this->_page, $this->_context);
+  $this->assertTrue($result['is_active_section']);
+ }
+ 
+ public function testGenerateLink_NoCustomContent_ProcessedPageIsContentSourcePage()
+ {
+  $this->_context->set_content_source_page($this->_page);
+  $result = $this->_converter->convert($this->_page, $this->_context);
+  $this->assertTrue($result['generate_link']);
  }
 }
 

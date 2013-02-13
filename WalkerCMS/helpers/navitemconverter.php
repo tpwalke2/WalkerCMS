@@ -43,6 +43,9 @@ class NavItemConverter implements INavItemConverter
   elseif ($working_page->get_id() == $context->get_current_page()->get_parent())
   {
    $result['is_active_section'] = true;
+  } elseif ($working_page->get_id() == $context->get_content_source_page()->get_id())
+  {
+   $result['is_active_section'] = true;
   }
 
   return $result;
