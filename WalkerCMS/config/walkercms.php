@@ -43,6 +43,8 @@ $walkercms_config = array(
 
 require_once(path('site_specific') . 'config.php');
 
+$walkercms_config['hash'] = sha1_file(path('site_specific') . 'config.php');
+
 $merger = new ConfigMerger();
 return $merger->merge($pages, $page_defaults, $walkercms_config);
 
