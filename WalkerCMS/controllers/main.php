@@ -27,7 +27,7 @@ class Main_Controller extends Base_Controller
 
   $context = $this->_context_factory->create($page_id);
 
-  $cache_key = 'view_' . $context->get_current_page()->get_id();
+  $cache_key = 'view_' . $context->get_current_page()->get_id() . '_' . $this->_config->get('walkercms.hash');
   if ($this->perform_caching($context->get_current_page()) && $this->_cache->has($cache_key))
   {
    $this->_logger->debug('[WalkerCMS] Performing caching and the view has been cached.');
@@ -38,6 +38,7 @@ class Main_Controller extends Base_Controller
 
   if ($this->perform_caching($context->get_current_page()))
   {
+   $generated_page = $generated_page->render();
    $this->_logger->debug('[WalkerCMS] Putting the view into the cache.');
    $this->_cache->put($cache_key, $generated_page, $this->_config->get('walkercms.page_cache_expiration'));
   }
