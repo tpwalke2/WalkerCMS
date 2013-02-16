@@ -46,7 +46,16 @@ require_once(path('site_specific') . 'config.php');
 $walkercms_config['hash'] = sha1_file(path('site_specific') . 'config.php');
 
 $merger = new ConfigMerger();
-return $merger->merge($pages, $page_defaults, $walkercms_config);
+$walkercms_config = $merger->merge($pages, $page_defaults, $walkercms_config);
+
+$validator = new ConfigValidator();
+$validation_result = $validator->validate($walkercms_config);
+if (!$validation_result['valid'])
+{
+ $plurality = (count($validation_result['errors']) == 1 ? 's were' : ' was');
+ throw new ErrorException("The following error$plurality found during validation:\n" . join("\n", $validation_result['errors']));
+}
+
+return $walkercms_config;
 
 /* End of file walkercms.php */
-/* Location: ./WalkerCMS/config/walkercms.php */
