@@ -70,6 +70,11 @@ IoC::register('inclusion_data_generator', function($inclusion_type)
  return new PageSpecificInclusionDataGenerator($inclusion_type, IoC::resolve('logger'));
 });
 
+IoC::singleton('site_html_header_data_generator', function()
+{
+ return new SiteHTMLHeaderDataGenerator(IoC::resolve('logger'));
+});
+
 IoC::singleton('pages_retriever', function()
 {
  return new ConfigPagesRetriever(IoC::resolve('page_factory'), IoC::resolve('config_adapter'), IoC::resolve('logger'));
@@ -233,6 +238,7 @@ IoC::singleton('page_generator', function()
 {
  return new PageGenerator(
    IoC::resolve('template_data_generator'),
+   IoC::resolve('site_html_header_data_generator'),
    IoC::resolve('inclusion_data_generator', array('htmlheaders')),
    IoC::resolve('inclusion_data_generator', array('headers')),
    IoC::resolve('content_data_generator'),

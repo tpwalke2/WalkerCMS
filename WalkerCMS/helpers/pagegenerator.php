@@ -10,7 +10,8 @@ class PageGenerator implements IPageGenerator
  private $_logger = null;
  
  function __construct($template_data_generator,
-                      $html_header_data_generator,
+                      $site_specifice_html_header_data_generator,
+                      $page_specific_html_header_data_generator,
                       $page_header_data_generator,
                       $content_data_generator,
                       $nav_data_generator,
@@ -23,7 +24,8 @@ class PageGenerator implements IPageGenerator
  {
   $this->_template_data_generator = $template_data_generator;
   $this->_generators = array(
-    'page_specific_html_header' => $html_header_data_generator,
+    'site_specific_html_header' => $site_specifice_html_header_data_generator,
+    'page_specific_html_header' => $page_specific_html_header_data_generator,
     'page_content'              => $content_data_generator,
     'secondary_content'         => $secondary_content_data_generator,
     'page_specific_header'      => $page_header_data_generator,

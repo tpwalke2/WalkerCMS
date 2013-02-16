@@ -197,6 +197,28 @@ class ContextFactoryTest extends PHPUnit_Framework_TestCase
   $result = $this->_factory->create('home');
   $this->assertSame($this->_pages['home_content'], $result->get_content_source_page());
  }
+ 
+ public function testCreate_SetSiteModel()
+ {
+  $this->_session->expects($this->once())
+                 ->method('get')
+                 ->with('context')
+                 ->will($this->returnValue(null));
+  $this->_pages_retriever->expects($this->once())
+                         ->method('get_pages')
+                         ->will($this->returnValue($this->_pages));
+  $this->_page_id_validator->expects($this->once())
+                           ->method('get_validated_page_id')
+                           ->with($this->equalTo($this->_pages), 'home')
+                           ->will($this->returnValue('home'));
+  $this->_content_source_page_retriever->expects($this->once())
+                                       ->method('get_page')
+                                       ->with($this->_pages, $this->_pages['home'])
+                                       ->will($this->returnValue($this->_pages['home']));
+ 
+  $result = $this->_factory->create('home');
+  $this->assertInstanceOf('SiteModel', $result->get_site());
+ }
 }
 
 /* End of file contextfactory.test.php */

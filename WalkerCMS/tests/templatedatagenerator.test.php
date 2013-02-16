@@ -6,6 +6,7 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  private $_logger = null;
  private $_generator = null;
  private $_context = null;
+ private $_site = null;
  private $_current_page = null;
  private $_content_source_page = null;
  private $_config_expectations = null;
@@ -19,6 +20,7 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
                 ->will($this->returnCallback(array($this, 'config_get_callback')));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_generator = new TemplateDataGenerator($this->_required_determiner, $this->_config, $this->_logger);
+  $this->_site = $this->getMock('SiteModel', array('has_custom_html_header'));
   $this->_current_page = $this->getMock('PageModel', array('has_custom_html_header',
                                                             'has_custom_css',
                                                             'has_custom_js',
@@ -30,6 +32,7 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
                                                               'page_title' => 'Home Page')));
   $this->_content_source_page = new PageModel(array('id' => 'about'));
   $this->_context = new AppContext();
+  $this->_context->set_site($this->_site);
   $this->_context->set_current_page($this->_current_page);
   $this->_context->set_content_source_page($this->_content_source_page);
   
@@ -43,6 +46,16 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
    $this->_current_page->expects($this->any())
                        ->method($method)
                        ->will($this->returnValue($value));
+  }
+ }
+ 
+ private function set_site_expectations($expectations)
+ {
+  foreach ($expectations as $method=>$value)
+  {
+   $this->_site->expects($this->any())
+   ->method($method)
+   ->will($this->returnValue($value));
   }
  }
  
@@ -242,14 +255,28 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
   $this->assertEquals('some different keywords', $result['site_keywords']);
  }
  
- public function testGenerateData_HasCustomHTMLHeader()
+ public function testGenerateData_HasCustomSiteHTMLHeader()
+ {
+  $this->set_site_expectations(array('has_custom_html_header' => true));
+  $result = $this->_generator->generate_data($this->_context);
+  $this->assertTrue($result['has_site_specific_html_header']);
+ }
+ 
+ public function testGenerateData_NoCustomSiteHTMLHeader()
+ {
+  $this->set_site_expectations(array('has_custom_html_header' => false));
+  $result = $this->_generator->generate_data($this->_context);
+  $this->assertFalse($result['has_site_specific_html_header']);
+ }
+ 
+ public function testGenerateData_HasCustomPageHTMLHeader()
  {
   $this->set_page_expectations(array('has_custom_html_header' => true));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_page_specific_html_header']); 
  }
  
- public function testGenerateData_NoCustomHTMLHeader()
+ public function testGenerateData_NoCustomPageHTMLHeader()
  {
   $this->set_page_expectations(array('has_custom_html_header' => false));
   $result = $this->_generator->generate_data($this->_context);

@@ -47,6 +47,8 @@ class ContextFactory implements IContextFactory
   $result->set_content_source_page($this->_content_source_page_retriever->get_page($result->get_pages(), $result->get_current_page()));
   $this->_logger->debug("[WalkerCMS] Content source page ID: {$result->get_content_source_page()->get_id()}");
   
+  $result->set_site(new SiteModel());
+  
   return $result;
  }
 }
