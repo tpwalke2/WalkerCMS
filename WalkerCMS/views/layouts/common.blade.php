@@ -1,4 +1,6 @@
-{{-- @if file_exists(path('site_specific') . 'template/layout_template.php') --}}
+@if (File::exists(path('site_specific') . 'template/layout_template.php'))
+ <?php require_once(path('site_specific') . 'template/layout_template.php');?>
+@else
 <!DOCTYPE html>
 <html lang="en">
  <!-- Copyright &copy; {{ date('Y') }} by {{ $organization_full_title }} All Rights Reserved. -->
@@ -11,3 +13,4 @@
   @include('partials.inner_template')
  </body>
 </html>
+@endif
