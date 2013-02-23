@@ -36,9 +36,7 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
   $this->_content_source_page = new PageModel(array(
     'id' => 'content_source_id',
     'parent' => 'other_id'));
-  $this->_context = new AppContext();
-  $this->_context->set_pages($this->_pages);
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context = $this->getMock('AppContext', array('get_current_page'));
   $this->_context->set_content_source_page($this->_content_source_page);
  }
  
@@ -50,17 +48,26 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  public function testLoggerInteraction()
  {
   $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $this->_converter->convert($this->_page, $this->_context);
  }
 
  public function testConvertPageID()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('a_page_id', $result['page_id']);
  }
 
  public function testTooltipFromPageTitle()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('The Page Title', $result['tooltip']);
  }
@@ -76,7 +83,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
-  
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('Menu Title', $result['tooltip']);
  }
@@ -92,6 +101,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('Law &amp; Order', $result['tooltip']);
  }
@@ -107,12 +119,18 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('2 &gt; 1', $result['tooltip']);
  }
 
  public function testDescriptionFromMenuTitle()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('Menu Title', $result['description']);
  }
@@ -128,6 +146,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('The Page Title', $result['description']);
  }
@@ -143,6 +164,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('2 &gt; 1 &amp; 3 &lt; 4', $result['description']);
  }
@@ -158,12 +182,18 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('Law &amp; Order &gt; CSI', $result['description']);
  }
 
  public function testExternalURLIsEmpty()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['is_external']);
  }
@@ -179,12 +209,18 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['is_external']);
  }
 
  public function testOverrideURLIsEmpty()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['is_override']);
  }
@@ -200,13 +236,18 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
-  
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['is_override']);
  }
 
  public function testURLComesFromPageID()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('a_page_id', $result['url']);
  }
@@ -222,6 +263,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('http://www.example.com', $result['url']);
  }
@@ -237,7 +281,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
-  
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('other_page_id', $result['url']);
  }
@@ -253,6 +299,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'nav'          => true,
   )));
   $this->_page->expects($this->any())->method('has_custom_nav')->will($this->returnCallback(array($this, 'has_custom_nav_callback')));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('http://www.example.com', $result['url']);
  }
@@ -260,6 +309,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  public function testCustom_ProcessedPageHasCustomNav()
  {
   $this->_has_custom_nav = true;
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['has_custom_content']);
  }
@@ -267,12 +319,18 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  public function testCustomContent_ProcessedPageHasCustomNav()
  {
   $this->_has_custom_nav = true;
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('Custom Nav Content', $result['custom_content']);
  }
 
  public function testActiveSection_HasCustomContent()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['is_active_section']);
  }
@@ -280,58 +338,81 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  public function testGenerateLink_HasCustomContent()
  {
   $this->_has_custom_nav = true;
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['generate_link']);
  }
 
  public function testActiveSection_NoCustomContent_ProcessedPageIsNotCurrentPage()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['is_active_section']);
  }
 
  public function testActiveSection_NoCustomContent_CurrentPageIsProcessedPage()
  {
-  $this->_context->set_current_page($this->_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['is_active_section']);
  }
 
  public function testGenerateLink_NoCustomContent_ProcessedPageIsNotCurrentPage()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['generate_link']);
  }
 
  public function testGenerateLink_NoCustomContent_ProcessedPageIsCurrentPage()
  {
-  $this->_context->set_current_page($this->_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['generate_link']);
  }
 
  public function testCustom_NoCustomContent_ProcessedPageIsCurrentPage()
  {
-  $this->_context->set_current_page($this->_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['has_custom_content']);
  }
 
  public function testCustomContent_NoCustomContent_ProcessedPageIsCurrentPage()
  {
-  $this->_context->set_current_page($this->_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('', $result['custom_content']);
  }
 
  public function testCustom_NoCustomContent_ProcessedPageIsNotCurrentPage()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['has_custom_content']);
  }
 
  public function testCustomContent_NoCustomContent_ProcessedPageIsNotCurrentPage()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('', $result['custom_content']);
  }
@@ -342,7 +423,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'id' => 'other_id',
     'parent' => 'a_page_id',
   )));
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['is_active_section']);
  }
@@ -353,6 +436,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'id' => 'other_id',
     'parent' => 'a_page_id',
   )));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['generate_link']);
  }
@@ -363,6 +449,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'id' => 'other_id',
     'parent' => 'a_page_id',
   )));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertFalse($result['has_custom_content']);
  }
@@ -373,6 +462,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
     'id' => 'other_id',
     'parent' => 'a_page_id',
   )));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertEquals('', $result['custom_content']);
  }
@@ -380,6 +472,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  public function testActiveSection_NoCustomContent_ProcessedPageIsContentSourcePage()
  {
   $this->_context->set_content_source_page($this->_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['is_active_section']);
  }
@@ -387,6 +482,9 @@ class NavItemConverterTest extends PHPUnit_Framework_TestCase
  public function testGenerateLink_NoCustomContent_ProcessedPageIsContentSourcePage()
  {
   $this->_context->set_content_source_page($this->_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_converter->convert($this->_page, $this->_context);
   $this->assertTrue($result['generate_link']);
  }

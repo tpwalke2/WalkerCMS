@@ -1,5 +1,5 @@
 <?php
-interface ICacheAdapter
+interface ICache
 {
  function has($key);
  function get($key, $default = null);
@@ -8,5 +8,5 @@ interface ICacheAdapter
  function forget($key);
 }
 
-/* End of file icacheadapter.php */
-/* Location: ./WalkerCMS/helpers/icacheadapter.php */
+/* End of file icache.php */
+/* Location: ./WalkerCMS/helpers/icache.php */

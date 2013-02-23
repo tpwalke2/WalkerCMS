@@ -3,6 +3,26 @@ class AppContext
 {
  private $_cache;
  
+ public function get_current_page()
+ {
+  $store = $this->get_page_store();
+  $current_page_id = $this->get_current_page_id();
+  
+  if (isset($store) && isset($current_page_id))
+  {
+   return $store->get_page($current_page_id);
+  }
+  
+  return null;
+ }
+ 
+ public function get_pages()
+ {
+  $store = $this->get_page_store();
+  if (isset($store)) { return $store->get_all_pages(); }
+  return null;
+ }
+ 
  /**
   * Interaction with the context occurs solely here at the catch-all method.
   * Methods with 'get_' and 'set_' prefixes are interpreted as getters and

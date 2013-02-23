@@ -20,9 +20,8 @@ class ContactFormDataGeneratorTest extends PHPUnit_Framework_TestCase
     );
   
   $this->_context = new AppContext();
-  $this->_context->set_pages(array());
   $this->_current_page = new PageModel(array('id' => 'contact'));
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context->set_current_page_id('contact');
   $this->_context->set_content_source_page($this->_current_page);
  }
  

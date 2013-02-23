@@ -53,8 +53,10 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
               ->will($this->returnCallback(array($this, 'generate_view_callback')));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_current_page = $this->getMock('PageModel', array('has_custom_sub_nav'), array(array('id' => 'home')));
-  $this->_context = new AppContext();
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context = $this->getMock('AppContext', array('get_current_page'));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
     
   $this->_generator = new PageGenerator($this->_template_data_generator,
                                         $this->_site_html_header_data_generator,

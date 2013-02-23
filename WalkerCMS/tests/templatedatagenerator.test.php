@@ -31,9 +31,8 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
                                                               'id' => 'home',
                                                               'page_title' => 'Home Page')));
   $this->_content_source_page = new PageModel(array('id' => 'about'));
-  $this->_context = new AppContext();
+  $this->_context = $this->getMock('AppContext', array('get_current_page'));
   $this->_context->set_site($this->_site);
-  $this->_context->set_current_page($this->_current_page);
   $this->_context->set_content_source_page($this->_content_source_page);
   
   $this->_config_expectations = array('walkercms.organization_name' => 'WalkerCMS');
@@ -68,12 +67,18 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testLoggerInteraction()
  {
   $this->_logger->expects($this->atLeastOnce())->method('debug');
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $this->_generator->generate_data($this->_context);
  }
  
  public function testGenerateData_CorrectSite()
  {
   $this->_config_expectations['walkercms.site'] = 'WalkerCMS';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('WalkerCMS', $result['site']);
  }
@@ -81,12 +86,18 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentSite()
  {
   $this->_config_expectations['walkercms.site'] = 'Northwind';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Northwind', $result['site']);
  }
  
  public function testGenerateData_CorrectPageID()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('home', $result['page_id']);
  }
@@ -101,7 +112,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
                                                    'has_custom_sub_nav',
                                                    'has_custom_footer'), array(array(
                                                      'id' => 'about')));
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('about', $result['page_id']);
  }
@@ -117,13 +130,18 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
                                                            'has_custom_footer'), array(array(
                                                              'id' => 'home',
                                                              'page_title' => '')));
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('WalkerCMS', $result['page_title']);
  }
  
  public function testGenerateData_PageTitle_HasPageTitle()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('WalkerCMS: Home Page', $result['page_title']);
  }
@@ -140,7 +158,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
                                                            'has_custom_footer'), array(array(
                                                              'id' => 'home',
                                                              'page_title' => 'Services & Benefits')));
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Dewey, Cheatham, &amp; Howe: Services &amp; Benefits', $result['page_title']);
  }
@@ -148,6 +168,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_OrganizationFullTitle()
  {
   $this->_config_expectations['walkercms.organization_full_title'] = 'WalkerCMS, Inc.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('WalkerCMS, Inc.', $result['organization_full_title']);
  }
@@ -155,6 +178,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_OrganizationFullTitleIsHTMLEncoded()
  {
   $this->_config_expectations['walkercms.organization_full_title'] = 'Dewey, Cheatham, & Howe, Inc.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Dewey, Cheatham, &amp; Howe, Inc.', $result['organization_full_title']);
  }
@@ -162,18 +188,27 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentOrganizationFullTitle()
  {
   $this->_config_expectations['walkercms.organization_full_title'] = 'Northwind, LLC.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Northwind, LLC.', $result['organization_full_title']);
  }
  
  public function testGenerateData_OrganizationFullTitle_DefaultToOrganizationName()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('WalkerCMS', $result['organization_full_title']);
  }
  
  public function testGenerateData_OrganizationName()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('WalkerCMS', $result['organization_name']);
  }
@@ -181,6 +216,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_OrganizationNameIsHTMLEncoded()
  {
   $this->_config_expectations['walkercms.organization_name'] = 'Dewey, Cheatham, & Howe';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Dewey, Cheatham, &amp; Howe', $result['organization_name']);
  }
@@ -188,6 +226,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentOrganizationName()
  {
   $this->_config_expectations['walkercms.organization_name'] = 'Northwind, LLC.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Northwind, LLC.', $result['organization_name']);
  }
@@ -195,6 +236,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_Slogan()
  {
   $this->_config_expectations['walkercms.organization_slogan'] = 'Have it your way, right away.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Have it your way, right away.', $result['organization_slogan']);
  }
@@ -202,6 +246,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_Slogan_HTMLEncoded()
  {
   $this->_config_expectations['walkercms.organization_slogan'] = 'Family owned & operated.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('Family owned &amp; operated.', $result['organization_slogan']);
  }
@@ -209,6 +256,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentSlogan()
  {
   $this->_config_expectations['walkercms.organization_slogan'] = 'The Heartbeat of America';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('The Heartbeat of America', $result['organization_slogan']);
  }
@@ -216,13 +266,19 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_Description()
  {
   $this->_config_expectations['walkercms.description'] = 'WalkerCMS is a file-based CMS intended primarily for small websites.';
-  $result = $this->_generator->generate_data($this->_context);
+ $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
+   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('WalkerCMS is a file-based CMS intended primarily for small websites.', $result['site_description']);
  }
  
  public function testGenerateData_DifferentDescription()
  {
   $this->_config_expectations['walkercms.description'] = 'We have been serving the area\'s pest control needs for over 25 years.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('We have been serving the area\'s pest control needs for over 25 years.', $result['site_description']);
  }
@@ -230,6 +286,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DescriptionIsHTMLEncoded()
  {
   $this->_config_expectations['walkercms.description'] = 'A family-owned & operated business for over 30 years.';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('A family-owned &amp; operated business for over 30 years.', $result['site_description']);
  }
@@ -237,6 +296,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_Keywords()
  {
   $this->_config_expectations['walkercms.keywords'] = 'a few keywords';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('a few keywords', $result['site_keywords']);
  }
@@ -244,6 +306,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_KeywordsAreHTMLEncoded()
  {
   $this->_config_expectations['walkercms.keywords'] = 'including "quotes" & ampersands';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('including &quot;quotes&quot; &amp; ampersands', $result['site_keywords']);
  }
@@ -251,6 +316,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentKeywords()
  {
   $this->_config_expectations['walkercms.keywords'] = 'some different keywords';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('some different keywords', $result['site_keywords']);
  }
@@ -258,13 +326,19 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasCustomSiteHTMLHeader()
  {
   $this->set_site_expectations(array('has_custom_html_header' => true));
-  $result = $this->_generator->generate_data($this->_context);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
+   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_site_specific_html_header']);
  }
  
  public function testGenerateData_NoCustomSiteHTMLHeader()
  {
   $this->set_site_expectations(array('has_custom_html_header' => false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_site_specific_html_header']);
  }
@@ -272,6 +346,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasCustomPageHTMLHeader()
  {
   $this->set_page_expectations(array('has_custom_html_header' => true));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_page_specific_html_header']); 
  }
@@ -279,6 +356,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_NoCustomPageHTMLHeader()
  {
   $this->set_page_expectations(array('has_custom_html_header' => false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_page_specific_html_header']);
  }
@@ -286,6 +366,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasCustomCSS()
  {
   $this->set_page_expectations(array('has_custom_css' => true));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_page_specific_stylesheet']);
  }
@@ -293,6 +376,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_NoCustomCSS()
  {
   $this->set_page_expectations(array('has_custom_css' => false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_page_specific_stylesheet']);
  }
@@ -300,6 +386,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasCustomJS()
  {
   $this->set_page_expectations(array('has_custom_js' => true));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_page_specific_javascript']);
  }
@@ -307,6 +396,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_NoCustomJS()
  {
   $this->set_page_expectations(array('has_custom_js' => false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_page_specific_javascript']);
  }
@@ -314,6 +406,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_NoContactForm()
  {
   $this->_config_expectations['walkercms.contact_page'] = '';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_contact_form']);
  }
@@ -321,6 +416,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasContactForm()
  {
   $this->_config_expectations['walkercms.contact_page'] = 'home';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_contact_form']);
  }
@@ -328,6 +426,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_ContactFormSet_NotSetToCurrentPage()
  {
   $this->_config_expectations['walkercms.contact_page'] = 'contact';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_contact_form']);
  }
@@ -335,6 +436,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_ShowIEWarning()
  {
   $this->_config_expectations['walkercms.show_ie_warning'] = true;
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['show_ie_warning']);
  }
@@ -342,6 +446,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DoNotShowIEWarning()
  {
   $this->_config_expectations['walkercms.show_ie_warning'] = false;
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['show_ie_warning']);
  }
@@ -349,6 +456,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_IEWarningMaximumUnsupportedVersion()
  {
   $this->_config_expectations['walkercms.maximum_unsupported_ie_version'] = '7';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('7', $result['maximum_unsupported_ie_version']);
  }
@@ -356,6 +466,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentIEWarningMinimumVersion()
  {
   $this->_config_expectations['walkercms.maximum_unsupported_ie_version'] = '6';
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('6', $result['maximum_unsupported_ie_version']);
  }
@@ -363,6 +476,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasSecondaryContent()
  {
   $this->set_page_expectations(array('has_secondary_content' => true));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_secondary_content']);
  }
@@ -370,6 +486,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_NoSecondaryContent()
  {
   $this->set_page_expectations(array('has_secondary_content' => false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_secondary_content']);
  }
@@ -377,6 +496,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasCustomPageHeader()
  {
   $this->set_page_expectations(array('has_custom_page_header' => true));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_page_specific_header']);
  }
@@ -384,12 +506,18 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_NoCustomPageHeader()
  {
   $this->set_page_expectations(array('has_custom_page_header' => false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_page_specific_header']);
  }
  
  public function testGenerateData_CorrectContentSourcePageID()
  {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('about', $result['content_page_id']);
  }
@@ -397,6 +525,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_DifferentContentSourcePageID()
  {
   $this->_context->set_content_source_page($this->_current_page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertEquals('home', $result['content_page_id']);
  }
@@ -406,6 +537,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
   $this->_required_determiner->expects($this->once())
                              ->method('is_required')
                              ->will($this->returnValue(true));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_sub_nav']);
  }
@@ -415,6 +549,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
   $this->_required_determiner->expects($this->once())
                              ->method('is_required')
                              ->will($this->returnValue(false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_sub_nav']);
  }
@@ -422,6 +559,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_HasCustomFooter()
  {
   $this->set_page_expectations(array('has_custom_footer' => true));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertTrue($result['has_page_specific_footer']);
  }
@@ -429,6 +569,9 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
  public function testGenerateData_NoCustomFooter()
  {
   $this->set_page_expectations(array('has_custom_footer' => false));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_page_specific_footer']);
  }
