@@ -1,5 +1,35 @@
 <?php
 
+/**
+ * Testing Optional Parameters in classes' Dependency Injection
+ */
+class TestOptionalParamClassForIoC
+{
+	public function __construct($optional_param = 42) {}
+}
+
+/**
+ * Testing Dependency Injection with this class
+ */
+class TestClassOneForIoC
+{
+	public $_variable;
+}
+
+/**
+ * Testing Dependency Injection of ClassOne
+ */
+class TestClassTwoForIoC
+{
+	public $class_one;
+	public function __construct(TestClassOneForIoC $class_one)
+	{
+		$this->class_one = $class_one;
+	}
+}
+
+use \Laravel\IoC as IoC;
+
 class IoCTest extends PHPUnit_Framework_TestCase {
 
 	/**
@@ -70,5 +100,68 @@ class IoCTest extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue(IoC::registered('controller: ioc.test'));
 	}
+
+	/**
+	 * Test that classes with optional parameters can resolve
+	 */
+	public function testOptionalParamClassResolves()
+	{
+		$test = IoC::resolve('TestOptionalParamClassForIoC');
+		$this->assertInstanceOf('TestOptionalParamClassForIoC', $test);
+	}
+
+	/**
+	 * Test that we can resolve TestClassOneForIoC using IoC
+	 */
+	public function testClassOneForIoCResolves()
+	{
+		$test = IoC::resolve('TestClassOneForIoC');
+		$this->assertInstanceOf('TestClassOneForIoC', $test);
+	}
+
+	/**
+	 * Test that we can resolve TestClassTwoForIoC
+	 */
+	public function testClassTwoForIoCResolves()
+	{
+		$test = IoC::resolve('TestClassTwoForIoC');
+		$this->assertInstanceOf('TestClassTwoForIoC', $test);
+	}
+
+	/**
+	 * Test that when we resolve TestClassTwoForIoC we auto resolve
+	 * the dependency for TestClassOneForIoC
+	 */
+	public function testClassTwoResolvesClassOneDependency()
+	{
+		$test = IoC::resolve('TestClassTwoForIoC');
+		$this->assertInstanceOf('TestClassOneForIoC', $test->class_one);
+	}
+
+	/**
+	 * Test that when we resolve TestClassTwoForIoC with a parameter
+	 * that it actually uses that instead of a blank class TestClassOneForIoC
+	 */
+	public function testClassTwoResolvesClassOneWithArgument()
+	{
+		$class_one = IoC::resolve('TestClassOneForIoC');
+		$class_one->test_variable = 42;
+
+		$class_two = IoC::resolve('TestClassTwoForIoC', array($class_one));
+		$this->assertEquals(42, $class_two->class_one->test_variable);
+	}
+
+    public function testCanUnregisterRegistered()
+    {
+        $testClass = 'test';
+
+        IoC::register($testClass, function() {});
+
+        $this->assertTrue(IoC::registered($testClass));
+
+        IoC::unregister($testClass);
+
+        $this->assertFalse(IoC::registered($testClass));
+    }
 
 }
