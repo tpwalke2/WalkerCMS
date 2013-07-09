@@ -19,7 +19,7 @@ body {
   height: 100%;
 }
 
-ul.linearList li {
+ul.linear-list li {
   display: inline;
   list-style-type: none;
   padding-right: 20px;
@@ -54,7 +54,7 @@ input.submission-control {
   border: 0;
 }
 
-span.contact_legend
+span.contact-legend
 {
   font-size: xx-small;
 }

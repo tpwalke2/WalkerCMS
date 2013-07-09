@@ -22,6 +22,12 @@ class ValidationWrapper implements IValidationWrapper
  {
   return $this->_inner_validation->errors->get($key);
  }
+ 
+ public function get_all_errors()
+ {
+  return $this->_inner_validation->errors->all();
+ }
 }
+
 /* End of file validationwrapper.php */
 /* Location: ./WalkerCMS/helpers/laravel/validationwrapper.php */

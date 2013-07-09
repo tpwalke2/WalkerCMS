@@ -23,17 +23,16 @@ class ContextFactory implements IContextFactory
  
  public function create($page_id)
  {
-  $this->_logger->debug("[WalkerCMS] Generating context for page id '$page_id'");
+  $this->_logger->debug("[WalkerCMS] Getting context for page id '$page_id'");
   $result = $this->_session->get('context');
+  
   if ($result === null) {
    $this->_logger->debug('[WalkerCMS] Creating new context');
    $result = new AppContext();
   }
   else
   {
-   $this->_session->forget('context');
    $this->_logger->debug('[WalkerCMS] Context passed from session');
-   $this->_logger->debug("[WalkerCMS] $result");
   }
   
   $result->set_page_store($this->_page_store);
@@ -46,6 +45,8 @@ class ContextFactory implements IContextFactory
   $this->_logger->debug("[WalkerCMS] Content source page ID: {$result->get_content_source_page()->get_id()}");
   
   $result->set_site(new SiteModel());
+
+  $this->_session->put('context', $result);
   
   return $result;
  }

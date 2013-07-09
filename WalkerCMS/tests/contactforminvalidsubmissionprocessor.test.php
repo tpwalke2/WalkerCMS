@@ -14,7 +14,7 @@ class ContactFormInvalidSubmissionProcessorTest extends PHPUnit_Framework_TestCa
   $this->_processor = new ContactFormInvalidSubmissionProcessor($this->_logger);
   $this->result = array();
   $this->_error_expectations = array();
-  $this->_validation = $this->getMock('IValidationWrapper', array('fails', 'has_errors', 'get_errors'));
+  $this->_validation = $this->getMock('IValidationWrapper', array('fails', 'has_errors', 'get_errors', 'get_all_errors'));
   $this->_validation->expects($this->any())
                     ->method('has_errors')
                     ->will($this->returnCallback(array($this, 'has_errors_callback')));

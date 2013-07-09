@@ -19,7 +19,6 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
  private $_allowed_views = array(
    'layouts.common' => '',
    'partials.page_inclusion' => '',
-   'partials.nav_template' => '',
    'partials.nav' => '');
  private $_data_types = array(
    'site_html_header',
@@ -161,7 +160,7 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
                       ->method('has_custom_sub_nav')
                       ->will($this->returnValue(false));
   $result = $this->_generator->generate_page($this->_context);
-  $this->assertEquals('partials.nav_template', $result['nav']['view_name']);
+  $this->assertEquals('partials.page_inclusion', $result['nav']['view_name']);
   $this->assertEquals('partials.nav', $result['nav']['view_data']['nav_items']['view_name']);
   $this->assertEquals('nav_data', $result['nav']['view_data']['nav_items']['view_data']['name']);
  }
@@ -172,7 +171,7 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
                       ->method('has_custom_sub_nav')
                       ->will($this->returnValue(false));
   $result = $this->_generator->generate_page($this->_context);
-  $this->assertEquals('partials.nav_template', $result['sub_nav']['view_name']);
+  $this->assertEquals('partials.page_inclusion', $result['sub_nav']['view_name']);
   $this->assertEquals('partials.nav', $result['sub_nav']['view_data']['nav_items']['view_name']);
   $this->assertEquals('sub_nav_data', $result['sub_nav']['view_data']['nav_items']['view_data']['name']);
  }

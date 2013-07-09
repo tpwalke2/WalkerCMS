@@ -36,7 +36,7 @@ class AppContext
  {
   $matches = array();
   
-  if (!preg_match('/^(set|get)_(.+)$/', $method, $matches))
+  if (!preg_match('/^(set|get|clear)_(.+)$/', $method, $matches))
   {
    throw new BadMethodCallException("Invalid method '$method' invoked on app context.");
   }
@@ -44,16 +44,20 @@ class AppContext
   $accessor = $matches[1];
   $key = $matches[2];
   
-  if ($accessor == 'get')
+  switch ($accessor)
   {
-   $default = null;
-   if (count($parameters) > 0) { $default = $parameters[0]; }
-   if (!isset($this->_cache[$key])) { return $default; }
-   return $this->_cache[$key];
-  }
-  elseif ($accessor == 'set')
-  {
-   $this->_cache[$key] = $parameters[0];
+   case 'get':
+    $default = null;
+    if (count($parameters) > 0) { $default = $parameters[0]; }
+    if (!isset($this->_cache[$key])) { return $default; }
+    return $this->_cache[$key];
+    break;
+   case 'set':
+    $this->_cache[$key] = $parameters[0];
+    break;
+   case 'clear':
+     $this->_cache[$key] = null;
+     break;
   }
  }
  

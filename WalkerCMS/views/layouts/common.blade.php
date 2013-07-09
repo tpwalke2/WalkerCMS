@@ -10,7 +10,7 @@
  </head>
  <body>
   @include('partials.ie_warning')
-  @include('partials.inner_template')
+  @include('partials.page_inclusion')
  </body>
 </html>
 @endif

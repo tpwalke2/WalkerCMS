@@ -1,6 +1,4 @@
 <?php
-use Laravel\Redirect;
-
 class RedirectAdapter implements IRedirectAdapter
 {
  public function to($action_name, $additional_data = null)

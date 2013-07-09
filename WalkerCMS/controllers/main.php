@@ -24,9 +24,8 @@ class Main_Controller extends Base_Controller
  public function action_page($page_id = 'home')
  {
   $this->_logger->debug("[WalkerCMS] Requested page: $page_id");
-
+  
   $context = $this->_context_factory->create($page_id);
-
   $cache_key = 'view_' . $context->get_current_page()->get_id() . '_' . $this->_config->get('walkercms.hash');
   if ($this->perform_caching($context->get_current_page()) && $this->_cache->has($cache_key))
   {

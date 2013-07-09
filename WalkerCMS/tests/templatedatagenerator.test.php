@@ -575,6 +575,24 @@ class TemplateDataGeneratorTest extends PHPUnit_Framework_TestCase
   $result = $this->_generator->generate_data($this->_context);
   $this->assertFalse($result['has_page_specific_footer']);
  }
+ 
+ public function testGenerateData_CorrectInclusionType()
+ {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
+  $result = $this->_generator->generate_data($this->_context);
+  $this->assertEquals('template', $result['inclusion_type']);
+ }
+ 
+ public function testGenerateData_CorrectInclusionFile()
+ {
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
+  $result = $this->_generator->generate_data($this->_context);
+  $this->assertEquals('inner_template.php', $result['inclusion_file']);
+ }
 }
 
 /* End of file templatedatagenerator.test.php */

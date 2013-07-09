@@ -15,7 +15,7 @@ class ContextFactoryTest extends PHPUnit_Framework_TestCase
   $this->_page_store = $this->getMock('IPageStore', array('get_all_pages', 'get_page', 'exists', 'get_parent', 'get_children', 'get_all_by_properties'));
   $this->_page_id_validator = $this->getMock('IPageIDValidator', array('get_validated_page_id'));
   $this->_content_source_page_retriever = $this->getMock('IPageRetriever', array('get_page'));
-  $this->_session = $this->getMock('ISessionAdapter', array('get', 'forget'));
+  $this->_session = $this->getMock('ISessionAdapter', array('get', 'forget', 'has', 'put'));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_factory = new ContextFactory(
     $this->_page_store,
@@ -45,10 +45,6 @@ class ContextFactoryTest extends PHPUnit_Framework_TestCase
                  ->method('get')
                  ->with('context')
                  ->will($this->returnValue($this->_existing_context));
-  $this->_session->expects($this->once())
-                 ->method('forget')
-                 ->with('context')
-                 ->will($this->returnValue(true));
   $this->_page_id_validator->expects($this->once())
                            ->method('get_validated_page_id')
                            ->with($this->equalTo($this->_pages), 'home')
@@ -68,10 +64,6 @@ class ContextFactoryTest extends PHPUnit_Framework_TestCase
                  ->method('get')
                  ->with('context')
                  ->will($this->returnValue($this->_existing_context));
-  $this->_session->expects($this->once())
-                 ->method('forget')
-                 ->with('context')
-                 ->will($this->returnValue(true));
   $this->_page_id_validator->expects($this->once())
                            ->method('get_validated_page_id')
                            ->with($this->equalTo($this->_pages), 'home')
@@ -91,8 +83,6 @@ class ContextFactoryTest extends PHPUnit_Framework_TestCase
                  ->method('get')
                  ->with('context')
                  ->will($this->returnValue(null));
-  $this->_session->expects($this->never())
-                 ->method('forget');
   $this->_page_id_validator->expects($this->once())
                            ->method('get_validated_page_id')
                            ->with($this->equalTo($this->_pages), 'home')
@@ -105,6 +95,28 @@ class ContextFactoryTest extends PHPUnit_Framework_TestCase
   $result = $this->_factory->create('home');
   $this->assertInstanceOf('AppContext', $result);
  }
+ 
+ public function testCreate_AddContextToSession()
+ {
+  $this->_session->expects($this->once())
+       ->method('get')
+       ->with('context')
+       ->will($this->returnValue(null));
+  $this->_page_id_validator->expects($this->once())
+       ->method('get_validated_page_id')
+       ->with($this->equalTo($this->_pages), 'home')
+       ->will($this->returnValue('home'));
+  $this->_content_source_page_retriever->expects($this->once())
+       ->method('get_page')
+       ->with($this->_pages, $this->_pages['home'])
+       ->will($this->returnValue($this->_pages['home']));
+  $this->_session->expects($this->once())
+                 ->method('put')
+                 ->with('context', $this->anything());
+ 
+  $result = $this->_factory->create('home');
+  $this->assertInstanceOf('AppContext', $result);
+ } 
  
  public function testCreate_GenerateNewContext_DifferentInstancesInSubsequentCalls()
  {

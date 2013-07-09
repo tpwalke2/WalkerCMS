@@ -60,6 +60,13 @@ class AppContextTest extends PHPUnit_Framework_TestCase
   $this->assertEquals($pages, $this->_context->get_items());
  }
  
+ public function testSetAndClearItem()
+ {
+  $this->_context->set_items(array('home' => array('id' => 'home')));
+  $this->_context->clear_items();
+  $this->assertNull($this->_context->get_items());
+ }
+ 
  public function testGetPreviouslyUnsetItem()
  {
   $this->assertNull($this->_context->get_items());

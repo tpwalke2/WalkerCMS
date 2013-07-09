@@ -1,6 +1,4 @@
 <?php
-use Laravel\CLI\Tasks\Bundle\Publisher;
-
 class ConfigPageStoreTest extends PHPUnit_Framework_TestCase
 {
  private $_page_factory = null;

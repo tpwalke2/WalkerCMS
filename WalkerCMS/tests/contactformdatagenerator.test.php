@@ -102,6 +102,27 @@ class ContactFormDataGeneratorTest extends PHPUnit_Framework_TestCase
   $this->assertEquals($generated_view, $result['contact_form']);
  }
  
+ public function testGenerateData_ClearFormDataFromContextAfterUse()
+ {
+  $inner_data = array('inclusion_type' => 'content', 'page_id' => $this->_current_page->get_id());
+ 
+  $form_data = array('submitter_name' => 'Tom', 'submitter_email' => 'twalker@example.com', 'message' => '', 'submitting_page_id' => 'contact');
+  $this->_context->set_contact_form_data($form_data);
+  $generated_view = array('status' => 'generated');
+  $this->_config->expects($this->any())
+                ->method('get')
+                ->with('walkercms.contact_page')
+                ->will($this->returnValue('contact'));
+  $this->_view->expects($this->once())
+              ->method('generate_view')
+              ->with('partials.contact_form', $this->equalTo($form_data))
+              ->will($this->returnValue($generated_view));
+ 
+  $result = $this->_generator->generate_data($this->_current_page, $this->_context);
+ 
+  $this->assertEquals('default returned', $this->_context->get_contact_form_data('default returned'));
+ }
+ 
  public function testGenerateData_UseContactFormNameFromContext()
  {
   $inner_data = array('inclusion_type' => 'content', 'page_id' => $this->_current_page->get_id());
@@ -119,6 +140,25 @@ class ContactFormDataGeneratorTest extends PHPUnit_Framework_TestCase
  
   $result = $this->_generator->generate_data($this->_current_page, $this->_context);
   $this->assertEquals($generated_view, $result['contact_form']);
+ }
+ 
+ public function testGenerateData_ClearContactFormFromContextAfterUse()
+ {
+  $inner_data = array('inclusion_type' => 'content', 'page_id' => $this->_current_page->get_id());
+  $form_data = array('submitter_name' => '', 'submitter_email' => '', 'message' => '', 'submitting_page_id' => 'contact');
+  $this->_context->set_contact_form_view('partials.contact.testing');
+  $generated_view = array('status' => 'generated');
+  $this->_config->expects($this->any())
+                ->method('get')
+                ->with('walkercms.contact_page')
+                ->will($this->returnValue('contact'));
+  $this->_view->expects($this->once())
+              ->method('generate_view')
+              ->with('partials.contact.testing', $this->equalTo($form_data))
+              ->will($this->returnValue($generated_view));
+ 
+  $result = $this->_generator->generate_data($this->_current_page, $this->_context);
+  $this->assertEquals('default returned', $this->_context->get_contact_form_view('default returned'));
  }
 }
 

@@ -160,6 +160,34 @@ class NavDataGeneratorTest extends PHPUnit_Framework_TestCase
  
   $this->assertEquals(0, count($result['nav_items']));
  }
+ 
+ public function testGenerateData_CorrectInclusionType()
+ {
+  $this->_config_adapter->expects($this->once())
+                        ->method('get')
+                        ->with('walkercms.organization_name')
+                        ->will($this->returnValue('Northwind'));
+  $this->_context->expects($this->any())
+                 ->method('get_pages')
+                 ->will($this->returnValue($this->_pages));
+  $result = $this->_generator->generate_data($this->_current_page, $this->_context);
+ 
+  $this->assertEquals('template', $result['inclusion_type']);
+ }
+ 
+ public function testGenerateData_CorrectInclusionFile()
+ {
+  $this->_config_adapter->expects($this->once())
+                        ->method('get')
+                        ->with('walkercms.organization_name')
+                        ->will($this->returnValue('Northwind'));
+  $this->_context->expects($this->any())
+                 ->method('get_pages')
+                 ->will($this->returnValue($this->_pages));
+  $result = $this->_generator->generate_data($this->_current_page, $this->_context);
+ 
+  $this->assertEquals('nav_template.php', $result['inclusion_file']);
+ }
 }
 
 /* End of file navdatagenerator.test.php */

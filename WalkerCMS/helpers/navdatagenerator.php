@@ -22,10 +22,12 @@ class NavDataGenerator implements IDataGenerator
  {
   $this->_logger->debug("[WalkerCMS] Generating nav data for page '{$working_page->get_id()}'");
   return array(
-    'nav_id' => ($this->_is_primary_nav ? 'nav' : 'subNav'),  // TODO: nav_id is obsolete, this decision should be pushed to site templates
-    'is_primary_nav' => $this->_is_primary_nav,
-    'nav_items' => $this->convert_nav_items($context),
+    'nav_id'            => ($this->_is_primary_nav ? 'nav' : 'subNav'),  // TODO: nav_id is obsolete, this decision should be pushed to site templates
+    'is_primary_nav'    => $this->_is_primary_nav,
+    'nav_items'         => $this->convert_nav_items($context),
     'organization_name' => $this->_config_adapter->get('walkercms.organization_name'),
+    'inclusion_type'    => 'template',
+    'inclusion_file'    => 'nav_template.php',
   );
  }
 

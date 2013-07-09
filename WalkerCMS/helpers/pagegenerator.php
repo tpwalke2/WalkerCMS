@@ -1,4 +1,6 @@
 <?php
+use Laravel\Blade;
+
 class PageGenerator implements IPageGenerator
 {
  private $_template_data_generator = null;
@@ -10,7 +12,7 @@ class PageGenerator implements IPageGenerator
  private $_logger = null;
  
  function __construct($template_data_generator,
-                      $site_specifice_html_header_data_generator,
+                      $site_specific_html_header_data_generator,
                       $page_specific_html_header_data_generator,
                       $page_header_data_generator,
                       $content_data_generator,
@@ -24,7 +26,7 @@ class PageGenerator implements IPageGenerator
  {
   $this->_template_data_generator = $template_data_generator;
   $this->_generators = array(
-    'site_specific_html_header' => $site_specifice_html_header_data_generator,
+    'site_specific_html_header' => $site_specific_html_header_data_generator,
     'page_specific_html_header' => $page_specific_html_header_data_generator,
     'page_content'              => $content_data_generator,
     'secondary_content'         => $secondary_content_data_generator,
@@ -49,15 +51,14 @@ class PageGenerator implements IPageGenerator
    $result[$key] = $this->_view->generate_view('partials.page_inclusion', $generator->generate_data($current_page, $context));
   }
   
-  $result['nav'] = $this->_view->generate_view('partials.nav_template', $this->generate_full_nav_data($current_page, $context));
+  $result['nav'] = $this->_view->generate_view('partials.page_inclusion', $this->generate_full_nav_data($current_page, $context));
   
   $sub_nav_data = array();
-  $sub_nav_view = 'partials.nav_template';
+  $sub_nav_view = 'partials.page_inclusion';
   if ($current_page->has_custom_sub_nav())
   {
    $this->_logger->debug("[WalkerCMS] Custom sub nav for page '{$current_page->get_id()}'");
    $sub_nav_data = $this->_custom_sub_nav_data_generator->generate_data($current_page, $context);
-   $sub_nav_view = 'partials.page_inclusion';
   } else {
    $sub_nav_data = $this->_sub_nav_data_generator->generate_data($current_page, $context);
    $sub_nav_data['nav_items'] = $this->_view->generate_view('partials.nav', $sub_nav_data);
@@ -71,6 +72,8 @@ class PageGenerator implements IPageGenerator
  {
   $nav_data = $this->_nav_data_generator->generate_data($current_page, $context);
   $nav_data['nav_items'] = $this->_view->generate_view('partials.nav', $nav_data);
+  $nav_data['inclusion_type'] = 'template';
+  $nav_data['inclusion_file'] = 'nav_template.php';
   return $nav_data;
  }
 }

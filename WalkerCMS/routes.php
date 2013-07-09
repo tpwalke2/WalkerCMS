@@ -7,6 +7,7 @@
 */
 Route::any('/', 'main@page');
 Route::post('contact_submission', array('before' => 'csrf', 'uses' => 'contact@contact_submission'));
+Route::post('form_submission', array('before' => 'csrf', 'uses' => 'forms@form_submission'));
 Route::any('(:any)', 'main@page');
 
 /*

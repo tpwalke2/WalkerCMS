@@ -29,7 +29,7 @@ class ContactFormValidatorRetrieverTest extends PHPUnit_Framework_TestCase
                    ->method('create_validator')
                    ->with($this->equalTo($all_input), $this->equalTo($rules))
                    ->will($this->returnValue($validation));
-  $this->assertSame($validation, $this->_retriever->get_contact_form_validator());
+  $this->assertSame($validation, $this->_retriever->get_form_validator());
  }
  
  public function testGetValidator_UseLogger()
@@ -48,7 +48,7 @@ class ContactFormValidatorRetrieverTest extends PHPUnit_Framework_TestCase
                    ->method('create_validator')
                    ->with($this->equalTo($all_input), $this->equalTo($rules))
                    ->will($this->returnValue($validation));
-  $result = $this->_retriever->get_contact_form_validator();
+  $result = $this->_retriever->get_form_validator();
  }
 }
 

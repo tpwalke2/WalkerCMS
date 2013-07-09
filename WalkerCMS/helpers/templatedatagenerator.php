@@ -42,6 +42,8 @@ class TemplateDataGenerator implements ITemplateDataGenerator
     'content_page_id' => $context->get_content_source_page()->get_id(),
     'has_sub_nav' => $this->_sub_nav_required_determiner->is_required($context->get_pages(), $current_page),
     'has_page_specific_footer' => $current_page->has_custom_footer(),
+    'inclusion_type' => 'template',
+    'inclusion_file' => 'inner_template.php',
   );
  }
 }

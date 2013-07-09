@@ -26,6 +26,9 @@ class ContactFormDataGenerator implements IDataGenerator
     );
   $contact_form_view = $context->get_contact_form_view('partials.contact_form');
   
+  $context->clear_contact_form_data();
+  $context->clear_contact_form_view();
+  
   return array('contact_form' => $this->_view->generate_view($contact_form_view, $contact_form_data));
  }
 }
