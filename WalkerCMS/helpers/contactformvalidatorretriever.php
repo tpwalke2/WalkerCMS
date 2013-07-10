@@ -12,7 +12,7 @@ class ContactFormValidatorRetriever implements IValidatorRetriever
   $this->_logger = $logger;
  }
  
- public function get_contact_form_validator()
+ public function get_form_validator()
  {
   $this->_logger->debug('[Contact Form] Retrieving contact form validator');
   $rules = array(

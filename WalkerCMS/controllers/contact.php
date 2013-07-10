@@ -41,11 +41,12 @@ class Contact_Controller extends Base_Controller
   $result = $this->_result_factory->create();
   $context = $this->_context_factory->create($result['submitting_page_id']);
 
-  $context->set_contact_validation($this->_validation_retriever->get_contact_form_validator()); 
+  $context->set_contact_validation($this->_validation_retriever->get_form_validator()); 
   if ($context->get_contact_validation()->fails()) { $result = $this->_invalid_submission_processor->process($result, $context); }
   elseif ($result['spam_control'] != '') { $result = $this->_spam_submission_processor->process($result, $context); }
   else { $result = $this->_valid_submission_processor->process($result, $context); }
  
+  $context->clear_contact_validation();
   $context->set_contact_form_data($result);
   
   return $this->_response_retriever->get_response($result, $context);

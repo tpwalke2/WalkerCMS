@@ -71,12 +71,74 @@ $(function() {
       message: "Please enter a message"
     }
   });
+  
+  setDateParts();
+  
+  $('select.month-input').change(function(event) {
+    updateDate(this, 'month');
+  });
+  
+  $('select.year-input').change(function(event) {
+    updateDate(this, 'year');
+  });
+  
+  $('select.day-input').change(function(event) {
+    updateDate(this, 'day');
+  });
 });
+
+function setDateParts() 
+{
+  var hiddenDateSelects = $('.date-select input[type=hidden]');
+  
+  for (var i = 0; i < hiddenDateSelects.length; i++)
+  {
+    var currentDateInput = $(hiddenDateSelects[i]);
+    var currentDate = getDateFromISOValue(currentDateInput.val());
+    $('#' + currentDateInput.attr('id') + '_month').val(currentDate.getMonth());
+    $('#' + currentDateInput.attr('id') + '_day').val(currentDate.getDate());
+    $('#' + currentDateInput.attr('id') + '_year').val(currentDate.getFullYear());
+  }
+}
+
+function updateDate(jsObj, type)
+{
+  var jqObj = $(jsObj);
+  var dateElementID = jqObj.attr('id').replace('_' + type, '');
+  var dateElement = $('input#' + dateElementID);
+  var currentDate = getDateFromISOValue(dateElement.val());
+  if (type == 'month')
+  {
+    currentDate.setMonth(jqObj.val());
+  } else if (type == 'year') {
+    currentDate.setFullYear(jqObj.val());
+  } else if (type == 'day') {
+    currentDate.setDate(jqObj.val());
+  }
+  
+  dateElement.val(getISODateString(currentDate));
+}
+
+function getDateFromISOValue(isoDateString)
+{
+  if ((typeof isoDateString === 'undefined') || (isoDateString == '')) {return new Date(); }
+  
+  var dateParts = isoDateString.split('-');
+  return new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+}
+
+function getISODateString(date)
+{
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  var day = date.getDate();
+  
+  return year + '-' + (month < 10 ? '0' : '') + month + '-' + (day < 10 ? '0' : '') + day;
+}
 
 function addValidationError(message)
 {
   var contactValidationErrors = $('#contact_validation_errors');
-  // TODO: If object is not available, add it to the DOM
   contactValidationErrors.append(message);
   contactValidationErrors.show();
 }

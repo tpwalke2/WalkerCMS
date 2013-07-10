@@ -9,6 +9,7 @@
 - [Dynamic Where Clauses](#dynamic)
 - [Table Joins](#joins)
 - [Ordering Results](#ordering)
+- [Grouping Results](#grouping)
 - [Skip & Take](#limit)
 - [Aggregates](#aggregates)
 - [Expressions](#expressions)
@@ -53,6 +54,12 @@ You now have a fluent query builder for the "users" table. Using this query buil
 
 	$user = DB::table('users')->get(array('id', 'email as user_email'));
 
+#### Retrieving an array with the values of a given column:
+
+    $users = DB::table('users')->take(10)->lists('email', 'id');
+
+> **Note:** Second parameter is optional
+
 #### Selecting distinct results from the database:
 
 	$user = DB::table('users')->distinct()->get();
@@ -67,6 +74,13 @@ There are a variety of methods to assist you in building where clauses. The most
 	return DB::table('users')
 		->where('id', '=', 1)
 		->or_where('email', '=', 'example@gmail.com')
+		->first();
+
+To do the equivalent of an AND where, simply chain the query with another where:
+
+	return DB::table('users')
+		->where('id', '=', 1)
+		->where('activated', '=', 1)
 		->first();
 
 Of course, you are not limited to simply checking equality. You may also use **greater-than**, **less-than**, **not-equal**, and **like**:
@@ -112,6 +126,26 @@ The suite of **where_null** methods makes checking for NULL values a piece of ca
 	return DB::table('users')
 		->where('email', '=', 'example@gmail.com')
 		->or_where_not_null('updated_at')
+		->get();
+
+### where\_between, where\_not\_between, or\_where\_between, and or\_where\_not\_between
+
+The suite of **where_between** methods makes checking if values fall BETWEEN a minimum and maximum super easy :
+	
+	return DB::table('users')->where_between($column, $min, $max)->get();	
+
+	return DB::table('users')->where_between('updated_at', '2000-10-10', '2012-10-10')->get();
+
+	return DB::table('users')->where_not_between('updated_at', '2000-10-10', '2012-01-01')->get();
+
+	return DB::table('users')
+		->where('email', '=', 'example@gmail.com')
+		->or_where_between('updated_at', '2000-10-10', '2012-01-01')
+		->get();
+
+	return DB::table('users')
+		->where('email', '=', 'example@gmail.com')
+		->or_where_not_between('updated_at', '2000-10-10', '2012-01-01')
 		->get();
 
 <a name="nested-where"></a>
@@ -184,6 +218,13 @@ Of course, you may sort on as many columns as you wish:
 		->order_by('email', 'desc')
 		->order_by('name', 'asc')
 		->get();
+
+<a name="grouping"></a>
+## Grouping Results
+
+You can easily group the results of your query using the **group_by** method:
+
+	return DB::table(...)->group_by('email')->get();
 
 <a name="limit"></a>
 ## Skip & Take

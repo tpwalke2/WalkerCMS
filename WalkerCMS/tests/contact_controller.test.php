@@ -21,12 +21,12 @@ class ContactControllerTest extends PHPUnit_Framework_TestCase
   $this->_context = new AppContext();
   $this->_initial_result = array('submitting_page_id' => 'contact', 'spam_control' => '');
   $this->_processed_result = $this->_initial_result;
-  $this->_validation = $this->getMock('IValidationWrapper', array('fails', 'has_errors', 'get_errors'));
+  $this->_validation = $this->getMock('IValidationWrapper', array('fails', 'has_errors', 'get_errors', 'get_all_errors'));
   
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_result_factory = $this->getMock('IDataFactory', array('create'));
   $this->_context_factory = $this->getMock('IContextFactory', array('create'));
-  $this->_validation_retriever = $this->getMock('IValidatorRetriever', array('get_contact_form_validator'));
+  $this->_validation_retriever = $this->getMock('IValidatorRetriever', array('get_form_validator'));
   $this->_invalid_submission_processor = $this->getMock('IDataProcessor', array('process'));
   $this->_spam_submission_processor = $this->getMock('IDataProcessor', array('process'));
   $this->_valid_submission_processor = $this->getMock('IDataProcessor', array('process'));
@@ -45,7 +45,7 @@ class ContactControllerTest extends PHPUnit_Framework_TestCase
     );
   
   $this->_validation_retriever->expects($this->any())
-                              ->method('get_contact_form_validator')
+                              ->method('get_form_validator')
                               ->will($this->returnValue($this->_validation));
   }
  
@@ -166,6 +166,33 @@ class ContactControllerTest extends PHPUnit_Framework_TestCase
                             ->will($this->returnValue(array('response')));
   $this->assertEquals(array('response'), $this->_controller->post_contact_submission());
   $this->assertEquals($this->_processed_result, $this->_context->get_contact_form_data());
+ }
+ 
+ public function testPostContactSubmission_ClearFormValidation()
+ {
+  $this->_processed_result['processed'] = 'valid';
+ 
+  $this->_result_factory->expects($this->once())
+                        ->method('create')
+                        ->will($this->returnValue($this->_initial_result));
+  $this->_context_factory->expects($this->once())
+                         ->method('create')
+                         ->with('contact')
+                         ->will($this->returnValue($this->_context));
+  $this->_validation->expects($this->once())
+                    ->method('fails')
+                    ->will($this->returnValue(false));
+  $this->_spam_submission_processor->expects($this->never())->method('process');
+  $this->_invalid_submission_processor->expects($this->never())->method('process');
+  $this->_valid_submission_processor->expects($this->once())
+                                    ->method('process')
+                                    ->will($this->returnCallback(array($this, 'process_callback')));
+  $this->_response_retriever->expects($this->once())
+                            ->method('get_response')
+                            ->with($this->equalTo($this->_processed_result), $this->equalTo($this->_context))
+                            ->will($this->returnValue(array('response')));
+  $this->assertEquals(array('response'), $this->_controller->post_contact_submission());
+  $this->assertEquals('default returned', $this->_context->get_contact_validation('default returned'));
  }
 
  public function testPostContactSubmission_UseLogger()

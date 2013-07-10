@@ -15,6 +15,7 @@ class TemplateDataGenerator implements ITemplateDataGenerator
  
  public function generate_data($context)
  {
+  $site = $context->get_site();
   $current_page = $context->get_current_page();
   $this->_logger->debug("[WalkerCMS] Generating template data for page '{$current_page->get_id()}'");
   $page_title = $current_page->get_page_title();
@@ -29,6 +30,7 @@ class TemplateDataGenerator implements ITemplateDataGenerator
     'organization_slogan' => htmlentities($this->_config->get('walkercms.organization_slogan', '')),
     'site_description' => htmlentities($this->_config->get('walkercms.description')),
     'site_keywords' => htmlentities($this->_config->get('walkercms.keywords')),
+    'has_site_specific_html_header' => $site->has_custom_html_header(),
     'has_page_specific_html_header' => $current_page->has_custom_html_header(),
     'has_page_specific_stylesheet' => $current_page->has_custom_css(),
     'has_page_specific_javascript' => $current_page->has_custom_js(),
@@ -40,6 +42,8 @@ class TemplateDataGenerator implements ITemplateDataGenerator
     'content_page_id' => $context->get_content_source_page()->get_id(),
     'has_sub_nav' => $this->_sub_nav_required_determiner->is_required($context->get_pages(), $current_page),
     'has_page_specific_footer' => $current_page->has_custom_footer(),
+    'inclusion_type' => 'template',
+    'inclusion_file' => 'inner_template.php',
   );
  }
 }

@@ -1,7 +1,7 @@
 <?php
 use Laravel\Cache;
 
-class CacheAdapter implements ICacheAdapter
+class CacheAdapter implements ICache
 {
  public function has($key)
  {
