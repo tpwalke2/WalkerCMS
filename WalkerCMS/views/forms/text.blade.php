@@ -1,0 +1,1 @@
+{{ Form::text($item['input_name'], $item_values[$item['input_name']], array('id' => $item['fully_qualified_id'], 'maxlength' => $item['max_length'])) }}

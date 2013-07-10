@@ -70,9 +70,9 @@ IoC::register('inclusion_data_generator', function($inclusion_type)
  return new PageSpecificInclusionDataGenerator($inclusion_type, IoC::resolve('logger'));
 });
 
-IoC::singleton('pages_retriever', function()
+IoC::singleton('site_html_header_data_generator', function()
 {
- return new ConfigPagesRetriever(IoC::resolve('page_factory'), IoC::resolve('config_adapter'), IoC::resolve('logger'));
+ return new SiteHTMLHeaderDataGenerator(IoC::resolve('logger'));
 });
 
 IoC::singleton('page_id_validator', function()
@@ -88,6 +88,21 @@ IoC::singleton('parent_retriever', function()
 IoC::singleton('sub_nav_required_determiner', function()
 {
  return new SubNavRequiredDeterminer(IoC::resolve('parent_retriever'), IoC::resolve('logger'));
+});
+
+IoC::singleton('form_data_generator', function()
+{
+ return new FormDataGenerator(
+   IoC::resolve('config_adapter'),
+   IoC::resolve('logger'));
+});
+
+IoC::singleton('form_generator', function()
+{
+ return new FormGenerator(
+   IoC::resolve('form_data_generator'),
+   IoC::resolve('view_adapter'), 
+   IoC::resolve('logger'));
 });
 
 IoC::singleton('template_data_generator', function()
@@ -181,9 +196,33 @@ IoC::singleton('contact_form_result_data_factory', function()
    IoC::resolve('logger'));
 });
 
+IoC::singleton('form_result_data_factory', function()
+{
+ return new FormResultDataFactory(
+   IoC::resolve('input_adapter'),
+   IoC::resolve('request_adapter'),
+   IoC::resolve('config_adapter'),
+   IoC::resolve('logger'));
+});
+
 IoC::singleton('contact_form_validator_retriever', function()
 {
  return new ContactFormValidatorRetriever(
+   IoC::resolve('validator_adapter'),
+   IoC::resolve('input_adapter'),
+   IoC::resolve('logger'));
+});
+
+IoC::singleton('form_validator_retriever', function()
+{
+ return new FormValidatorRetriever(
+   array(
+     'text'            => new TextInputRulesGenerator(),
+     'email'           => new EmailInputRulesGenerator(),
+     'phone'           => new TextInputRulesGenerator(),
+     'multiple_choice' => new MultipleChoiceRulesGenerator(),
+     ),
+   IoC::resolve('config_adapter'),
    IoC::resolve('validator_adapter'),
    IoC::resolve('input_adapter'),
    IoC::resolve('logger'));
@@ -194,9 +233,19 @@ IoC::singleton('contact_form_invalid_submission_processor', function()
  return new ContactFormInvalidSubmissionProcessor(IoC::resolve('logger'));
 });
 
+IoC::singleton('form_invalid_submission_processor', function()
+{
+ return new FormInvalidSubmissionProcessor(IoC::resolve('logger'));
+});
+
 IoC::singleton('contact_form_spam_submission_processor', function()
 {
  return new ContactFormSpamSubmissionProcessor(IoC::resolve('logger'));
+});
+
+IoC::singleton('form_spam_submission_processor', function()
+{
+ return new FormSpamSubmissionProcessor(IoC::resolve('logger'));
 });
 
 IoC::singleton('contact_form_valid_submission_processor', function()
@@ -209,6 +258,16 @@ IoC::singleton('contact_form_valid_submission_processor', function()
    );
 });
 
+IoC::singleton('form_valid_submission_processor', function()
+{
+ return new FormValidSubmissionProcessor(
+   IoC::resolve('mailer_adapter'),
+   IoC::resolve('config_adapter'),
+   IoC::resolve('view_adapter'),
+   IoC::resolve('logger')
+ );
+});
+
 IoC::singleton('contact_form_response_retriever', function()
 {
  return new ContactFormResponseRetriever(
@@ -218,6 +277,17 @@ IoC::singleton('contact_form_response_retriever', function()
    IoC::resolve('redirect_adapter'),
    IoC::resolve('logger')
    );
+});
+
+IoC::singleton('form_response_retriever', function()
+{
+ return new FormResponseRetriever(
+   IoC::resolve('request_adapter'),
+   null,
+   IoC::resolve('response_adapter'),
+   IoC::resolve('redirect_adapter'),
+   IoC::resolve('logger')
+ );
 });
 
 IoC::singleton('content_data_generator', function()
@@ -233,6 +303,7 @@ IoC::singleton('page_generator', function()
 {
  return new PageGenerator(
    IoC::resolve('template_data_generator'),
+   IoC::resolve('site_html_header_data_generator'),
    IoC::resolve('inclusion_data_generator', array('htmlheaders')),
    IoC::resolve('inclusion_data_generator', array('headers')),
    IoC::resolve('content_data_generator'),
@@ -245,10 +316,26 @@ IoC::singleton('page_generator', function()
    IoC::resolve('logger'));
 });
 
-IoC::register('context_factory', function()
+IoC::singleton('config_page_store', function()
+{
+ return new ConfigPageStore(
+   IoC::resolve('page_factory'),
+   IoC::resolve('config_adapter'),
+   IoC::resolve('logger'));
+});
+
+IoC::singleton('page_store', function()
+{
+ return new CachingPageStore(
+   IoC::resolve('cache_adapter'),
+   IoC::resolve('config_page_store'),
+   IoC::resolve('logger'));
+});
+
+IoC::singleton('context_factory', function()
 {
  return new ContextFactory(
-   IoC::resolve('pages_retriever'), 
+   IoC::resolve('page_store'), 
    IoC::resolve('page_id_validator'),
    IoC::resolve('content_source_page_retriever'),
    IoC::resolve('session_adapter'),
@@ -276,6 +363,21 @@ IoC::register('controller: contact', function()
    IoC::resolve('contact_form_spam_submission_processor'),
    IoC::resolve('contact_form_valid_submission_processor'),
    IoC::resolve('contact_form_response_retriever'),
+   IoC::resolve('response_adapter'),
+   IoC::resolve('logger')
+ );
+});
+
+IoC::register('controller: forms', function()
+{
+ return new Forms_Controller(
+   IoC::resolve('form_result_data_factory'),
+   IoC::resolve('context_factory'),
+   IoC::resolve('form_validator_retriever'),
+   IoC::resolve('form_invalid_submission_processor'),
+   IoC::resolve('form_spam_submission_processor'),
+   IoC::resolve('form_valid_submission_processor'),
+   IoC::resolve('form_response_retriever'),
    IoC::resolve('response_adapter'),
    IoC::resolve('logger')
  );

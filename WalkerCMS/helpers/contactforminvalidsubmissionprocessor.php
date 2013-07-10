@@ -12,9 +12,10 @@ class ContactFormInvalidSubmissionProcessor implements IDataProcessor
  {
   $this->_logger->debug('[Contact Form] Input validation failed');
   $validation = $context->get_contact_validation();
-  $this->add_validation_error($validation, 'name', $result);
-  $this->add_validation_error($validation, 'email', $result);
-  $this->add_validation_error($validation, 'message', $result);
+  foreach (array('name', 'email', 'message') as $key)
+  {
+   $this->add_validation_error($validation, $key, $result);
+  }
   
   return $result;
  }

@@ -79,7 +79,7 @@ return array(
 		'move' => 'moves',
 		'person' => 'people',
 		'sex' => 'sexes',
-		'tooth' => 'teeth'
+		'tooth' => 'teeth',
 	),
 
 	'uncountable' => array(

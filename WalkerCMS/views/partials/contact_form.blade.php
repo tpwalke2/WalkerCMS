@@ -25,7 +25,7 @@
   <label class="error" for="message_input">{{ $message_validation_error }}</label>
   @endif
   <br />
-  <span class="contact_legend">All fields required.</span><br />
+  <span class="contact-legend">All fields required.</span><br />
   <input id="contact_submission" class="button" type="submit" value="Send" />
 </p>
 {{ Form::close() }}

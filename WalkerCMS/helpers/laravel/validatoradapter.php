@@ -3,9 +3,9 @@ use Laravel\Validator;
 
 class ValidatorAdapter implements IValidatorAdapter
 {
- public function create_validator($input, $rules)
+ public function create_validator($input, $rules, $messages = array())
  {
-  return new ValidationWrapper(Validator::make($input, $rules));
+  return new ValidationWrapper(Validator::make($input, $rules, $messages = array()));
  }
 }
 

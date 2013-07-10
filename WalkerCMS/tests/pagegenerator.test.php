@@ -2,7 +2,8 @@
 class PageGeneratorTest extends PHPUnit_Framework_TestCase
 {
  private $_template_data_generator = null;
- private $_html_header_data_generator = null;
+ private $_site_html_header_data_generator = null;
+ private $_page_html_header_data_generator = null;
  private $_page_header_data_generator = null;
  private $_content_data_generator = null;
  private $_nav_data_generator = null;
@@ -18,10 +19,10 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
  private $_allowed_views = array(
    'layouts.common' => '',
    'partials.page_inclusion' => '',
-   'partials.nav_template' => '',
    'partials.nav' => '');
  private $_data_types = array(
-   'html_header',
+   'site_html_header',
+   'page_html_header',
    'page_header',
    'content',
    'nav',
@@ -36,7 +37,8 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
   $this->_template_data_generator->expects($this->any())
                                  ->method('generate_data')
                                  ->will($this->returnValue(array('name' => 'template_data')));
-  $this->_html_header_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
+  $this->_site_html_header_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
+  $this->_page_html_header_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_page_header_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_content_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
   $this->_nav_data_generator = $this->getMock('IDataGenerator', array('generate_data'));
@@ -50,11 +52,14 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
               ->will($this->returnCallback(array($this, 'generate_view_callback')));
   $this->_logger = $this->getMock('ILoggerAdapter', array('debug', 'error'));
   $this->_current_page = $this->getMock('PageModel', array('has_custom_sub_nav'), array(array('id' => 'home')));
-  $this->_context = new AppContext();
-  $this->_context->set_current_page($this->_current_page);
+  $this->_context = $this->getMock('AppContext', array('get_current_page'));
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($this->_current_page));
     
   $this->_generator = new PageGenerator($this->_template_data_generator,
-                                        $this->_html_header_data_generator,
+                                        $this->_site_html_header_data_generator,
+                                        $this->_page_html_header_data_generator,
                                         $this->_page_header_data_generator,
                                         $this->_content_data_generator,
                                         $this->_nav_data_generator,
@@ -74,8 +79,8 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
   {
    $object_name = "_{$type}_data_generator";
    $this->$object_name->expects($this->any())
-                       ->method('generate_data')
-                       ->will($this->returnValue(array('name' => "{$type}_data")));
+                      ->method('generate_data')
+                      ->will($this->returnValue(array('name' => "{$type}_data")));
   }
  }
 
@@ -89,14 +94,24 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
   $this->assertEquals('template_data', $result['view_data']['name']);
  }
  
- public function testGeneratePage_GetHTMLHeaderData()
+ public function testGeneratePage_GetSiteHTMLHeaderData()
+ {
+  $this->_current_page->expects($this->once())
+                      ->method('has_custom_sub_nav')
+                      ->will($this->returnValue(false));
+  $result = $this->_generator->generate_page($this->_context);
+  $this->assertEquals('partials.page_inclusion', $result['site_specific_html_header']['view_name']);
+  $this->assertEquals('site_html_header_data', $result['site_specific_html_header']['view_data']['name']);
+ }
+ 
+ public function testGeneratePage_GetPageHTMLHeaderData()
  {
   $this->_current_page->expects($this->once())
                       ->method('has_custom_sub_nav')
                       ->will($this->returnValue(false));
   $result = $this->_generator->generate_page($this->_context);
   $this->assertEquals('partials.page_inclusion', $result['page_specific_html_header']['view_name']);
-  $this->assertEquals('html_header_data', $result['page_specific_html_header']['view_data']['name']);
+  $this->assertEquals('page_html_header_data', $result['page_specific_html_header']['view_data']['name']);
  }
  
  public function testGeneratePage_GetPageHeaderData()
@@ -145,7 +160,7 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
                       ->method('has_custom_sub_nav')
                       ->will($this->returnValue(false));
   $result = $this->_generator->generate_page($this->_context);
-  $this->assertEquals('partials.nav_template', $result['nav']['view_name']);
+  $this->assertEquals('partials.page_inclusion', $result['nav']['view_name']);
   $this->assertEquals('partials.nav', $result['nav']['view_data']['nav_items']['view_name']);
   $this->assertEquals('nav_data', $result['nav']['view_data']['nav_items']['view_data']['name']);
  }
@@ -156,7 +171,7 @@ class PageGeneratorTest extends PHPUnit_Framework_TestCase
                       ->method('has_custom_sub_nav')
                       ->will($this->returnValue(false));
   $result = $this->_generator->generate_page($this->_context);
-  $this->assertEquals('partials.nav_template', $result['sub_nav']['view_name']);
+  $this->assertEquals('partials.page_inclusion', $result['sub_nav']['view_name']);
   $this->assertEquals('partials.nav', $result['sub_nav']['view_data']['nav_items']['view_name']);
   $this->assertEquals('sub_nav_data', $result['sub_nav']['view_data']['nav_items']['view_data']['name']);
  }

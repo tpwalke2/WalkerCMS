@@ -25,7 +25,7 @@ class ContactFormResponseRetrieverTest extends PHPUnit_Framework_TestCase
     $this->_redirect,
     $this->_logger);
   $this->_result = array('submitting_page_id' => 'contact');
-  $this->_context = new AppContext();
+  $this->_context = $this->getMock('AppContext', array('get_current_page'));
   $this->_view = $this->getMock('IViewWrapper', array('render'));
  }
  
@@ -61,7 +61,9 @@ class ContactFormResponseRetrieverTest extends PHPUnit_Framework_TestCase
  public function testGetResponse_AJAX()
  {
   $page = new PageModel(array('id' => 'contact'));
-  $this->_context->set_current_page($page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($page));
   $generated_content = array('contact_form' => $this->_view);
   $jsonified_result = array('jsonified');
   $new_result = $this->_result;
@@ -87,7 +89,9 @@ class ContactFormResponseRetrieverTest extends PHPUnit_Framework_TestCase
  public function testGetResponse_AJAX_UseLogger()
  {
   $page = new PageModel(array('id' => 'contact'));
-  $this->_context->set_current_page($page);
+  $this->_context->expects($this->any())
+                 ->method('get_current_page')
+                 ->will($this->returnValue($page));
   $generated_content = array('contact_form' => $this->_view);
   $jsonified_result = array('jsonified');
   $new_result = $this->_result;

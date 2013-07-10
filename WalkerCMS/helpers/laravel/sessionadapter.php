@@ -10,6 +10,16 @@ class SessionAdapter implements ISessionAdapter
  {
   return Session::forget($key);
  }
+ 
+ public function has($key)
+ {
+  return Session::has($key);
+ }
+ 
+ public function put($key, $value)
+ {
+  return Session::put($key, $value);
+ }
 }
 /* End of file sessionadapter.php */
 /* Location: ./WalkerCMS/helpers/laravel/sessionadapter.php */
